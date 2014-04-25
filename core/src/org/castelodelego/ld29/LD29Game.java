@@ -1,27 +1,71 @@
 package org.castelodelego.ld29;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 
-public class LD29Game extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+public class LD29Game extends Game {
+
+	static Screen splashScreen;
+	static Screen mainScreen;
+
 	
 	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+	public void create() {	
+		
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		
+		Globals.init(); // TODO: Send an instance of myself to "globals"
+		
+		// Creating global resource managers
+		queueAssets();
+		
+		splashScreen = new SplashScreen();
+		mainScreen = new MainScreen();
+		
+		setScreen(splashScreen);
+		
+	}
+
+	/**
+	 * Add all assets for loading here.
+	 * 
+	 */
+	private void queueAssets()
+	{
+		//		Globals.manager.load("images-packed/pack.atlas", TextureAtlas.class); // packed images
+	}
+	
+	@Override
+	public void dispose() {
 	}
 
 	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+	public void render() {		
+		
+		super.render();
+		
+		// Rendering here renders above everything else
+		// Good for rendering debug info
+		
+		// Uncomment for FPS
+		Globals.batch.begin();
+		Globals.debugtext.setColor(Color.YELLOW);
+		Globals.debugtext.draw(Globals.batch, "FPS: "+Gdx.graphics.getFramesPerSecond(), 0, Gdx.graphics.getHeight());		
+		Globals.batch.end();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
 	}
 }
