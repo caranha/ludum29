@@ -10,7 +10,6 @@ Enemies are taken from the pages as well?
 * Tasklist
 
 ** "Main" tasks
-- [ ] BUG: Not working correctly on Android
 
 ** "Heap" Tasks
 - [ ] Input Multiplexer - separates gameplay/menu input from global input
@@ -45,8 +44,14 @@ Adapting the Path:
 - [X] When the cutting finishes, one of the sub polygons is chosen to
   be the new "current" polygon,
 
-** 5- 
+** 5- e979fa7
 Graphics: 
 - [X] Two backgrounds: one that is revealed when the area is cut.
 - [X] Or: Draw full background. Draw base catwalk (under). Draw
   current background (cover, same as full?)
+
+** 6- 
+- [X] BUG: Not working correctly on Android
+- [X] BUG: Multiple polygons interfering with each other
+- [X] Moved Image string loading to the Gameplay Scene
+ 

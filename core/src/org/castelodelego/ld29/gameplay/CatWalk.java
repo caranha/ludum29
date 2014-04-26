@@ -40,7 +40,7 @@ public class CatWalk {
 	PolygonSprite background_bottom;
 	
 	
-	public CatWalk(Array<Vector2> startingpoints)
+	public CatWalk(Array<Vector2> startingpoints, String topimage, String bottomimage)
 	{
 		points = new Array<Vector2>(true, 30, Vector2.class);
 		original = new Array<Vector2>(true, 30, Vector2.class);
@@ -56,14 +56,12 @@ public class CatWalk {
 		pathlength = OgamMath.calcPolygonLength(points);
 		startPosition = points.first();
 		
-		// TODO: I have to dispose of these guys later
-		background_top_region = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("Background2");
-		background_bottom_region = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("Background1");
+		// FIXME: Have to dispose these guys
+		background_top_region = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion(topimage);
+		background_bottom_region = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion(bottomimage);
 		
 		background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
 		background_bottom = new PolygonSprite(createPolygonRegion(background_bottom_region,original));
-		
-		
 	}
 	
 	PolygonRegion createPolygonRegion(TextureRegion img, Array<Vector2> area)
@@ -238,6 +236,7 @@ public class CatWalk {
 	public void render(PolygonSpriteBatch batch)
 	{
 		background_bottom.draw(batch);
+		batch.flush(); // Black magick. Somehow if I don't flush the batch, one polygon sprite will influence the other.
 		background_top.draw(batch);
 	}
 	
@@ -374,6 +373,7 @@ public class CatWalk {
 			pathlength = OgamMath.calcPolygonLength(points);
 			startPosition = points.first();
 			
-			background_top.setRegion(createPolygonRegion(background_top_region,points));			
+			background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
+			//background_top.setRegion(createPolygonRegion(background_top_region,points));		
 	}
 }

@@ -1,11 +1,16 @@
 package org.castelodelego.ld29.gameplay;
 
+import org.castelodelego.ld29.Globals;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
@@ -13,29 +18,40 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameplayScreen implements Screen {
 
+	/* Systems */
 	OrthographicCamera gameCam;
 	ShapeRenderer debugrender;
 	PolygonSpriteBatch polygonbatch;
+	SpriteBatch batch;
+	Sprite background;
 	
 	/* debug variables */
 	Vector2 touchpoint;
 	Vector2 projectpoint;
 	
+	/* Gameplay variables */
 	CatWalk catwalkPath;
 	PlayerShip cutter;
 	
 	public GameplayScreen()
 	{
 		gameCam = new OrthographicCamera();
-		gameCam.setToOrtho(false);
 		debugrender = new ShapeRenderer();
 		polygonbatch = new PolygonSpriteBatch();
+		batch = new SpriteBatch();
 	}
 
 	public void reset()
 	{
-		catwalkPath = new CatWalk(DebugLevel.simpleRectangle());
+		
+		String topimage = "TopImageSample";
+		String bottomimage = "BottomImageSample";
+
+		background = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(topimage);
+		catwalkPath = new CatWalk(DebugLevel.simpleRectangle(),topimage,bottomimage);
 		cutter = new PlayerShip(catwalkPath.getStartPosition().x, catwalkPath.getStartPosition().y, catwalkPath);
+		
+		gameCam.setToOrtho(false, 800, 480); // 480,800 is the size of the "virtual" play area
 		
 		touchpoint = new Vector2();
 		projectpoint = new Vector2();
@@ -68,6 +84,10 @@ public class GameplayScreen implements Screen {
 		
 		
 		/** Rendering **/
+		batch.setProjectionMatrix(gameCam.combined);
+		batch.begin();
+		background.draw(batch);
+		batch.end();
 		
 		polygonbatch.setProjectionMatrix(gameCam.combined);
 		polygonbatch.begin();
