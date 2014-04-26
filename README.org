@@ -8,14 +8,39 @@ Enemies are taken from the pages as well?
 
 
 * Tasklist
-- [X] Log Overlay class --> Map<String,String> that should be
-  displayed every turn
-- [ ] Gameplay package --> Gameplay Scene has inputs
-- [ ] Input multiplexer --> Input is Touch/Mouse for in-cradle
-  movement, swipe/arrow keys for cutting
 
-- [ ] Cradle: List of Vector2 (integers)
-- [ ] Implements: Closest point, add cut, area, inside
+** "Main" tasks
+
+- Changing the Path:
+- [ ] Adapt main path based on cut
+- [ ] Decision is made solely on the largest area
+
+- Changing the cut:
+- [ ] Ship can change direction mid cut
+- [ ] Ship can die if it crosses its own path
+- [ ] Dead ship returns to its initial position
+
+** "Heap" Tasks
+- [ ] Input Multiplexer - separates gameplay/menu input from global input
+- [ ] Add keyboard input
 
 
 * Commits
+** 1- 7a36613
+   - Added Catwalk
+   - Added Gameplay Scene
+   - Added Input: Touching on the Gameplay scene identify closest
+     point to the catwalk.
+
+** 2- d87e771
+- Basic Ship:
+- [X] Identify closest path between two points in the catwalk
+- [X] Create "ship" class
+- [X] Ship moves to another point along the closest route on tap
+
+** 3- 
+- Cutting:
+- [X] Identify whether the desired cut is possible from the current
+  position
+- [X] Make ship move towards cut direction
+- [X] Make cut end when intersecting the main path

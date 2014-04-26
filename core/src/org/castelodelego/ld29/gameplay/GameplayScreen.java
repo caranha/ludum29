@@ -36,7 +36,7 @@ public class GameplayScreen implements Screen {
 	{
 		base = new CatWalk(DebugLevel.simpleRectangle());
 		current = new CatWalk(DebugLevel.simpleRectangle());
-		cutter = new PlayerShip(current.getStartingPoint().x, current.getStartingPoint().y);
+		cutter = new PlayerShip(current.getStartingPoint().x, current.getStartingPoint().y, current);
 		
 		touchpoint = new Vector2();
 		projectpoint = new Vector2();
@@ -49,11 +49,13 @@ public class GameplayScreen implements Screen {
 		touchpoint.set(posx, posy);
 		projectpoint = base.closestPoint(touchpoint);
 		current.shortestPath(cutter.getPos(), projectpoint);
-		//cutter.setPos(projectpoint.x, projectpoint.y);
-
-		
 		cutter.MoveTo(current.shortestPath(cutter.getPos(), projectpoint));
 	}
+
+	public void sendFling(int moveX, int moveY) {
+		cutter.CutTo(moveX, moveY);
+	}
+
 	
 	
 	@Override
@@ -122,5 +124,6 @@ public class GameplayScreen implements Screen {
 		// TODO Auto-generated method stub
 
 	}
+
 
 }

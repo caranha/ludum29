@@ -95,28 +95,31 @@ public class OgamMath {
 	
 	/**
 	 * Tests if the point is inside the polygon or not. This is an adaptation from math.Intersector.pointInPolygon
-	 * FIXME: This is returning a wrong result if the point is in the NORTH or EAST line of the poligon (out, when it should be in)
 	 * 
 	 * @param point
 	 * @param polygon
 	 * @return
 	 */
-	public static boolean isPointInPolygon(Vector2 point, Vector2[] polygon)
+	public static boolean isPointInPolygon(Vector2 point, Array<Vector2> polygon)
 	{
-		int j = polygon.length - 1;
+		Vector2 prev = polygon.peek();
+		
 		boolean oddNodes = false;
-		for (int i = 0; i < polygon.length; i++) 
+		for (Vector2 cur: polygon)
 		{
-			if (polygon[i].y < point.y && polygon[j].y >= point.y || polygon[j].y < point.y
-					&& polygon[i].y >= point.y) 
+			if (isPointInSegment(prev,cur,point))
+				return false;
+			
+			if (cur.y < point.y && prev.y >= point.y || prev.y < point.y
+					&& cur.y >= point.y) 
 			{
-				if (polygon[i].x + (point.y - polygon[i].y) / (polygon[j].y - polygon[i].y)
-						* (polygon[j].x - polygon[i].x) < point.x) 
+				if (cur.x + (point.y - cur.y) / (prev.y - cur.y)
+						* (prev.x - cur.x) < point.x) 
 				{
 					oddNodes = !oddNodes;
 				}
 			}
-			j = i;
+			prev = cur;
 		}
 		return oddNodes;
 	}

@@ -55,6 +55,8 @@ public class GameTouchListener implements GestureListener {
 			moveY = (int) (-1*Math.signum(velocityY));
 		
 		Globals.log.addMessage("command", "Last Command: Fling "+moveX+","+moveY+" --- ("+velocityX+","+velocityY+")");
+		parent.sendFling(moveX, moveY);
+		
 		return true;
 	}
 

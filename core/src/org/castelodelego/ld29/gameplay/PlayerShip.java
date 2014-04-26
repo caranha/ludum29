@@ -17,17 +17,31 @@ public class PlayerShip {
 
 	enum ShipStates { MOVING, CUTTING };
 	Array<Vector2> goals;
+	Array<Vector2> cutline;
+	
+	CatWalk rail;
 	
 	Vector2 pos;
 	
 	ShipStates state;
-	float speed = 100;
 	
-	public PlayerShip(float x, float y)
+	float move_speed = 200;
+	float cut_speed = 100;
+
+	Vector2 cut_dir;
+
+	
+	public PlayerShip(float x, float y, CatWalk r)
 	{
 		pos = new Vector2(x,y);
+		cut_dir = new Vector2(x,y);
+		
 		state = ShipStates.MOVING;
+
 		goals = new Array<Vector2>();
+		cutline = new Array<Vector2>();
+
+		rail = r;
 	}
 	
 	
@@ -41,6 +55,7 @@ public class PlayerShip {
 			moveToGoals(dt);
 			break;
 		case CUTTING:
+			moveToCut(dt);
 			break;
 		}
 		
@@ -48,8 +63,12 @@ public class PlayerShip {
 	}
 
 	
-	
-	// TODO: clamp movement
+	/**
+	 * Executes the movement when the player is only moving along the edges. Removes goals from the 
+	 * goallist as those are reached.
+	 * 
+	 * @param dt the time passed since last frame, in order to calculate speed
+	 */
 	void moveToGoals(float dt)
 	{
 		
@@ -62,16 +81,16 @@ public class PlayerShip {
 		
 		if (Math.abs(pos.x - goals.first().x) > 0.01f) // horizontal movement
 		{
-			pos.x += Math.signum(goals.first().x - pos.x)*(speed*dt);
+			pos.x += Math.signum(goals.first().x - pos.x)*(move_speed*dt);
 			pos.y = goals.first().y;
 		}
 		else
 		{
-			pos.y += Math.signum(goals.first().y - pos.y)*(speed*dt);
+			pos.y += Math.signum(goals.first().y - pos.y)*(move_speed*dt);
 			pos.x = goals.first().x;
 		}
 			
-		if (goals.first().dst(pos) < 1)
+		if (goals.first().dst(pos) < 2)
 		{
 			pos.set(goals.first());
 			goals.removeIndex(0);
@@ -80,20 +99,92 @@ public class PlayerShip {
 
 	}
 	
+	/**
+	 * Moves the ship following the cutting pattern. Checks for collision with 
+	 * the cutting line (snake-like) and for reaching the other side of the trail.
+	 * 
+	 * @param dt
+	 */
+	void moveToCut(float dt)
+	{
+		pos.x += cut_dir.x*cut_speed*dt;
+		pos.y += cut_dir.y*cut_speed*dt;
+		
+		// Test if the cut line is cutting the polygon
+		
+		int cuts = rail.intersectSegmentCatwalk(cutline.get(cutline.size-2), cutline.peek());
+		
+		if (cuts > 1 || (cutline.size > 2 && cuts > 0))
+		{
+			pos.set(rail.closestPoint(pos));
+
+			cutline.pop();
+			cutline.add(pos.cpy()); // Adding a fixed point in the end
+			
+			cutline.clear(); // Send cutline to the catwalk
+			
+			state = ShipStates.MOVING;
+		}
+		
+		
+		// Test if the cut line is cutting itself
+		
+		
+	}
 	
 	
-	
-	
+	/**
+	 * Does not modify the "targets" array, just copy its contents
+	 * @param targets
+	 */
 	public void MoveTo(Array<Vector2> targets)
 	{
 		if (state == ShipStates.MOVING)
-			goals = targets;
+			goals.clear();
+			goals.addAll(targets);
 	}	
+	
+	public void CutTo(int xdir, int ydir)
+	{
+		switch(state)
+		{
+		case MOVING:
+			Vector2 test = new Vector2(pos.x+xdir, pos.y+ydir);
+			if (OgamMath.isPointInPolygon(test, rail.points)) // Testing that this cut is acceptable in this position
+			{
+				goals.clear();
+				cutline.clear();
+				
+				state = ShipStates.CUTTING;	
+				cut_dir.set(xdir,ydir);
+				cutline.add(pos.cpy());
+				cutline.add(pos);				
+			}
+			break;
+			
+		case CUTTING:
+			if (cut_dir.x == xdir || cut_dir.y == ydir)
+				return;
+			cut_dir.set(xdir,ydir);
+			cutline.pop();
+			cutline.add(pos.cpy());
+			cutline.add(pos);
+			break;
+		}
+		
+	}
 	
 	public void debugRender(ShapeRenderer r)
 	{
-		r.setColor(Color.BLUE);
+		if (state == ShipStates.MOVING)
+			r.setColor(Color.BLUE);
+		else
+			r.setColor(Color.RED);
 		r.rect(pos.x-5, pos.y-5, 10, 10);
+
+		r.setColor(Color.RED);
+		for (int i = 1; i < cutline.size; i++)
+			r.line(cutline.get(i-1), cutline.get(i));
 	}
 	
 

@@ -174,6 +174,10 @@ public class CatWalk {
 		return points.peek();
 	}
 	
+	public Vector2[] asArray()
+	{
+		return points.items;
+	}
 	
 	public void debugRender(ShapeRenderer renderer)
 	{
@@ -185,6 +189,25 @@ public class CatWalk {
 		}
 	}
 	
+	/**
+	 * Tests if a line segment crosses the Catwalk
+	 * 
+	 * @param start first point of the segment to be tested
+	 * @param end last point of the segment to be tested
+	 * @return true if the segment crosses the polygon
+	 */
+	public int intersectSegmentCatwalk(Vector2 start, Vector2 end)
+	{
+		Vector2 prev = points.peek();
+		int ret = 0;
+		for (Vector2 cur: points)
+		{
+			if (Intersector.intersectSegments(start, end, prev, cur, null))
+				ret++;
+			prev = cur;
+		}
+		return ret;
+	}
 	
 	
 	
