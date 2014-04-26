@@ -1,5 +1,7 @@
 package org.castelodelego.ld29;
 
+import org.castelodelego.ld29.gameplay.GameplayScreen;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
@@ -8,8 +10,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class LD29Game extends Game {
 
-	static Screen splashScreen;
-	static Screen mainScreen;
+	public static Screen splashScreen;
+	public static Screen mainScreen;
+	public static Screen gameplayScreen;
+	
 	static OrthographicCamera globalcam;
 
 	
@@ -26,9 +30,10 @@ public class LD29Game extends Game {
 		
 		splashScreen = new SplashScreen();
 		mainScreen = new MainScreen();
+		gameplayScreen = new GameplayScreen();
 
 		globalcam = new OrthographicCamera();
-		globalcam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());	
+		globalcam.setToOrtho(false);	
 
 		
 		
@@ -60,13 +65,12 @@ public class LD29Game extends Game {
 		// Uncomment for FPS
 		
 		Globals.log.addMessage("FPS", "FPS: "+Gdx.graphics.getFramesPerSecond());
-		Globals.log.addMessage("test", "Hello World");
 		Globals.log.render();		
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		globalcam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		globalcam.setToOrtho(false);
 	}
 
 	@Override

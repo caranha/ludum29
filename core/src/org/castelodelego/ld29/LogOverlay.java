@@ -34,7 +34,7 @@ public class LogOverlay {
 		for (String message:messages.values())
 		{
 			Globals.debugtext.draw(Globals.batch, message, 0, Gdx.graphics.getHeight() - lineskip);
-			lineskip += 10;
+			lineskip += 15;
 		}
 		Globals.batch.end();
 	}
