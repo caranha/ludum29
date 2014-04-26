@@ -10,10 +10,38 @@ Enemies are taken from the pages as well?
 * Tasklist
 
 ** "Main" tasks
+- [-] Simple Enemy
+  - [ ] Enemy gets smaller/Faster when the catwalk gets smaller
+  - [X] If the enemy touches the player's line, the player is reset
+  - [X] Enemy moves randomly and "bounces" off the catwalk
+  - [X] Enemy has a weight that determines where the screen will be cut
+
+- [X] Enemy propertiers
+  - [X] Weight
+  - [X] Size
+  - [X] Speed
+
+- [ ] Player Ship
+  - [ ] "Regenerating" state - does not accept input, ends after a
+    certain time.
+  - [ ] Player "in" animation: Teleport Sprite gets smaller and
+    smaller, Player gets less and less transparent.
+  - [ ] When dying/regenerating, creates a dying
+    animation/regenerating animation.
+
+- [ ] Level
+  - Level contains: Top image name, Bottom image name, initial 
+    catwalk configuration, parameter for enemies
+
+- [-] Game lifecycle: 
+  - [ ] Total number of Player lifes, Game over
+  - [ ] Level Progression
+  - [X] Win leven when a certain coverage is reached
 
 ** "Heap" Tasks
 - [ ] Input Multiplexer - separates gameplay/menu input from global input
 - [ ] Add keyboard input
+- [ ] Make enemy collision detection more efficient
 
 
 * Commits
@@ -50,8 +78,13 @@ Graphics:
 - [X] Or: Draw full background. Draw base catwalk (under). Draw
   current background (cover, same as full?)
 
-** 6- 
+** 6- 0655170
 - [X] BUG: Not working correctly on Android
 - [X] BUG: Multiple polygons interfering with each other
 - [X] Moved Image string loading to the Gameplay Scene
- 
+
+** 7-
+- [X] If the enemy touches the player's line, the player is reset
+- [X] Enemy moves randomly and "bounces" off the catwalk
+- [X] Enemy has a weight that determines where the screen will be cut
+- [X] Win leven when a certain coverage is reached

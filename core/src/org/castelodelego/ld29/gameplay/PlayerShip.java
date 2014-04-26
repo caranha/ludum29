@@ -20,14 +20,14 @@ public class PlayerShip {
 	Array<Vector2> goals;
 	Array<Vector2> cutline;
 	
-	CatWalk rail;
-	
 	Vector2 pos;
 	
 	ShipStates state;
 	
-	float move_speed = 200;
-	float cut_speed = 100;
+	float move_speed = 250;
+	float cut_speed = 140;
+	
+	float size = 20;
 
 	Vector2 cut_dir;
 
@@ -41,13 +41,11 @@ public class PlayerShip {
 
 		goals = new Array<Vector2>();
 		cutline = new Array<Vector2>();
-
-		rail = r;
 	}
 	
 	
 	
-	public void update(float dt)
+	public void update(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
 	
 		switch(state)
@@ -56,17 +54,24 @@ public class PlayerShip {
 			moveToGoals(dt);
 			break;
 		case CUTTING:
-			moveToCut(dt);
+			moveToCut(dt,rail,enemies);
+			for (int i = 1; i < cutline.size; i++)
+				for (SimpleEnemy e: enemies)
+					if (Intersector.intersectSegmentCircle(cutline.get(i-1), cutline.get(i), e.getPos(), e.getRadius()*e.getRadius()))
+					{
+						reset(rail.getStartPosition());
+						return; // we're done here;
+					}
 			break;
 		}
 	}
 	
-	public void reset()
+	private void reset(Vector2 startposition)
 	{
 		goals.clear();
 		cutline.clear();
 		state = ShipStates.MOVING;
-		setPos(rail.getStartPosition().x, rail.getStartPosition().y);
+		setPos(startposition.x, startposition.y);
 	}
 	
 
@@ -113,7 +118,7 @@ public class PlayerShip {
 	 * 
 	 * @param dt
 	 */
-	void moveToCut(float dt)
+	void moveToCut(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
 		pos.x += cut_dir.x*cut_speed*dt;
 		pos.y += cut_dir.y*cut_speed*dt;
@@ -129,7 +134,7 @@ public class PlayerShip {
 			cutline.pop();
 			cutline.add(pos.cpy()); // Adding a fixed point in the end
 
-			rail.cutCatwalk(cutline);
+			rail.pushCutline(cutline, enemies);
 			goals.clear();
 
 			state = ShipStates.MOVING;
@@ -146,7 +151,7 @@ public class PlayerShip {
 			for (int i = 0; i < cutline.size-3; i++)
 				if (Intersector.intersectSegments(start, end, cutline.get(i), cutline.get(i+1),null))
 				{
-					reset();
+					reset(rail.getStartPosition());
 					return;
 				}
 		}
@@ -165,7 +170,7 @@ public class PlayerShip {
 			goals.addAll(targets);
 	}	
 	
-	public void CutTo(int xdir, int ydir)
+	public void CutTo(int xdir, int ydir, CatWalk rail)
 	{
 		switch(state)
 		{
@@ -201,8 +206,11 @@ public class PlayerShip {
 			r.setColor(Color.BLUE);
 		else
 			r.setColor(Color.RED);
-		r.rect(pos.x-5, pos.y-5, 10, 10);
-
+		r.rect(pos.x-(size/2), pos.y-(size/2), size, size);
+	}
+	
+	public void debugRenderCutline(ShapeRenderer r)
+	{
 		r.setColor(Color.RED);
 		for (int i = 1; i < cutline.size; i++)
 			r.line(cutline.get(i-1), cutline.get(i));

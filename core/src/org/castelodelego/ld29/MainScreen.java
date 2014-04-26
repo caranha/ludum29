@@ -35,6 +35,7 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void show() {
+		timeout = 0;
 		// TODO Auto-generated method stub
 
 	}

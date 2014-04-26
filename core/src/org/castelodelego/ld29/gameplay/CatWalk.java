@@ -40,6 +40,7 @@ public class CatWalk {
 	PolygonSprite background_bottom;
 	
 	
+	
 	public CatWalk(Array<Vector2> startingpoints, String topimage, String bottomimage)
 	{
 		points = new Array<Vector2>(true, 30, Vector2.class);
@@ -62,6 +63,7 @@ public class CatWalk {
 		
 		background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
 		background_bottom = new PolygonSprite(createPolygonRegion(background_bottom_region,original));
+		
 	}
 	
 	PolygonRegion createPolygonRegion(TextureRegion img, Array<Vector2> area)
@@ -186,8 +188,6 @@ public class CatWalk {
 		candidate.add(end);
 		
 		return candidate;
-		
-		
 	}
 	
 	/**
@@ -221,6 +221,11 @@ public class CatWalk {
 	public double getLength()
 	{
 		return pathlength;
+	}
+	
+	public double getCoverage()
+	{
+		return areacache/original_area;
 	}
 	
 	public Vector2 getStartPosition()
@@ -263,6 +268,28 @@ public class CatWalk {
 		
 
 	}
+
+	/** 
+	 * Test all enemies for collision, and signal them when they have collided with the catwalk
+	 * @param enemies
+	 */
+	public void collideEnemies(Array<SimpleEnemy> enemies)
+	{
+		Vector2 prev = points.peek();
+		for (Vector2 cur:points)
+		{
+			for (SimpleEnemy e: enemies)
+			{
+				Vector2 disp = new Vector2();
+				float disp_s = Intersector.intersectSegmentCircleDisplace(prev, cur, e.getPos(), e.getRadius(), disp);
+				if (disp_s < Float.POSITIVE_INFINITY)
+					e.collide(disp,disp_s);
+			}
+			prev = cur;
+		}
+	}
+	
+	
 	
 	/**
 	 * Tests if a line segment crosses the Catwalk
@@ -284,7 +311,12 @@ public class CatWalk {
 		return ret;
 	}
 
-	public void cutCatwalk(Array<Vector2> line) {
+	/**
+	 * Pushes a cutline into the CatWalk. The catwalk will be cut in the future.
+	 * 
+	 * @param line
+	 */
+	public void pushCutline(Array<Vector2> line, Array<SimpleEnemy> enemies) {
 		
 			// First we find out where the end points are located;
 			int startidx = -1, endidx = -1; 
@@ -298,9 +330,8 @@ public class CatWalk {
 					endidx = i;
 			}
 			
-			// creating paths:
-			Array<Vector2> p1 = new Array<Vector2>(true,30,Vector2.class);
-			Array<Vector2> p2 = new Array<Vector2>(true,30,Vector2.class);
+			Array<Vector2> p1 = new Array<Vector2>(true, 40, Vector2.class);
+			Array<Vector2> p2 = new Array<Vector2>(true, 40, Vector2.class);
 			
 			// Adding nodes from main path
 			int tmpidx;
@@ -354,26 +385,48 @@ public class CatWalk {
 				while (line.size > 0) // p1 nodes are added in reverse -- from end to start
 					p1.add(line.pop());
 			}
+
 			
-			// TODO: Have to take into account the presence of enemies, and send them "die" signals
+			/** TODO: Select 1 or 2 based on enemies **/
 			double p1area = OgamMath.calcPolygonArea(p1);
 			double p2area = OgamMath.calcPolygonArea(p2);
+			double p1weight = 0;
+			double p2weight = 0;
 			
-			if (p1area > p2area)
+			Array<SimpleEnemy> e1 = new Array<SimpleEnemy>();
+			Array<SimpleEnemy> e2 = new Array<SimpleEnemy>();
+			for (SimpleEnemy e: enemies)
+			{
+				if (OgamMath.isPointInPolygon(e.pos, p1))
+				{
+					e1.add(e);
+					p1weight+= e.weight;
+				}
+				else
+				{
+					e2.add(e);
+					p2weight+= e.weight;
+				}
+			}
+			
+			if (p1weight > p2weight || ( p1weight == p2weight && p1area > p2area))
 			{
 				points = p1;
 				areacache = p1area;
+				for (SimpleEnemy e: e2)
+					e.kill();
 			}
-			else
+			else	
 			{
 				points = p2;
 				areacache = p2area;
+				for (SimpleEnemy e: e1)
+					e.kill();
 			}
 			
 			pathlength = OgamMath.calcPolygonLength(points);
 			startPosition = points.first();
-			
-			background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
-			//background_top.setRegion(createPolygonRegion(background_top_region,points));		
+			background_top.setRegion(createPolygonRegion(background_top_region,points));
+			Globals.log.addMessage("Coverage", "Coverage: "+getCoverage());
 	}
 }
