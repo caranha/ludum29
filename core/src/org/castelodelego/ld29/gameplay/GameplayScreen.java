@@ -20,9 +20,7 @@ public class GameplayScreen implements Screen {
 	Vector2 touchpoint;
 	Vector2 projectpoint;
 	
-	
-	CatWalk base;
-	CatWalk current;
+	CatWalk catwalkPath;
 	PlayerShip cutter;
 	
 	public GameplayScreen()
@@ -34,9 +32,8 @@ public class GameplayScreen implements Screen {
 
 	public void reset()
 	{
-		base = new CatWalk(DebugLevel.simpleRectangle());
-		current = new CatWalk(DebugLevel.simpleRectangle());
-		cutter = new PlayerShip(current.getStartingPoint().x, current.getStartingPoint().y, current);
+		catwalkPath = new CatWalk(DebugLevel.simpleRectangle());
+		cutter = new PlayerShip(catwalkPath.getStartPosition().x, catwalkPath.getStartPosition().y, catwalkPath);
 		
 		touchpoint = new Vector2();
 		projectpoint = new Vector2();
@@ -47,9 +44,9 @@ public class GameplayScreen implements Screen {
 	public void sendTouch(float posx, float posy)
 	{
 		touchpoint.set(posx, posy);
-		projectpoint = base.closestPoint(touchpoint);
-		current.shortestPath(cutter.getPos(), projectpoint);
-		cutter.MoveTo(current.shortestPath(cutter.getPos(), projectpoint));
+		projectpoint = catwalkPath.closestPoint(touchpoint);
+		catwalkPath.shortestPath(cutter.getPos(), projectpoint);
+		cutter.MoveTo(catwalkPath.shortestPath(cutter.getPos(), projectpoint));
 	}
 
 	public void sendFling(int moveX, int moveY) {
@@ -73,11 +70,7 @@ public class GameplayScreen implements Screen {
 		
 		debugrender.begin(ShapeType.Line);
 		
-		debugrender.setColor(Color.RED);
-		base.debugRender(debugrender);
-		debugrender.setColor(Color.GREEN);
-		current.debugRender(debugrender);
-		
+		catwalkPath.debugRender(debugrender);		
 		cutter.debugRender(debugrender);
 		
 		debugrender.setColor(Color.WHITE);

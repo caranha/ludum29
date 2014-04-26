@@ -10,15 +10,13 @@ Enemies are taken from the pages as well?
 * Tasklist
 
 ** "Main" tasks
+Graphics: 
+- [ ] Two backgrounds: one that is revealed when the area is cut.
+- [ ] Revealed background is drawn on the area defined by "base
+  catwalk - current catwalk"
+- [ ] Or: Draw full background. Draw base catwalk (under). Draw
+  current background (cover, same as full?)
 
-- Changing the Path:
-- [ ] Adapt main path based on cut
-- [ ] Decision is made solely on the largest area
-
-- Changing the cut:
-- [ ] Ship can change direction mid cut
-- [ ] Ship can die if it crosses its own path
-- [ ] Dead ship returns to its initial position
 
 ** "Heap" Tasks
 - [ ] Input Multiplexer - separates gameplay/menu input from global input
@@ -38,9 +36,17 @@ Enemies are taken from the pages as well?
 - [X] Create "ship" class
 - [X] Ship moves to another point along the closest route on tap
 
-** 3- 
+** 3- 6692ee6
 - Cutting:
 - [X] Identify whether the desired cut is possible from the current
   position
 - [X] Make ship move towards cut direction
 - [X] Make cut end when intersecting the main path
+- [X] Ship can change direction mid cut
+
+** 4-
+Adapting the Path:
+- [X] If the ship crosses its own cut, then it is sent back to its
+  initial position.
+- [X] When the cutting finishes, one of the sub polygons is chosen to
+  be the new "current" polygon,

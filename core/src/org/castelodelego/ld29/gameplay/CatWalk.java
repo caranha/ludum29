@@ -1,6 +1,7 @@
 package org.castelodelego.ld29.gameplay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
@@ -15,20 +16,37 @@ import com.badlogic.gdx.utils.Array;
  */
 public class CatWalk {
 	
+	Array<Vector2> original;
 	Array<Vector2> points;
+	
+	double original_area;
 	double areacache;
 	double pathlength;
+	
+	Vector2 startPosition;
 	
 	
 	public CatWalk(Array<Vector2> startingpoints)
 	{
 		points = new Array<Vector2>(true, 30, Vector2.class);
+		original = new Array<Vector2>(true, 30, Vector2.class);
+		
 		for (Vector2 point:startingpoints)
+		{
 			points.add(point.cpy());
+			original.add(point.cpy());
+		}
+			
+		original_area = OgamMath.calcPolygonArea(original);
 		areacache = OgamMath.calcPolygonArea(points);
 		pathlength = OgamMath.calcPolygonLength(points);
+		startPosition = points.first();
 	}
 	
+	public void setStartPosition(Vector2 pos)
+	{
+		startPosition = closestPoint(pos);
+	}
 	
 	
 	/**
@@ -169,9 +187,9 @@ public class CatWalk {
 		return pathlength;
 	}
 	
-	public Vector2 getStartingPoint()
+	public Vector2 getStartPosition()
 	{
-		return points.peek();
+		return startPosition;
 	}
 	
 	public Vector2[] asArray()
@@ -181,12 +199,26 @@ public class CatWalk {
 	
 	public void debugRender(ShapeRenderer renderer)
 	{
-		Vector2 startpoint = points.peek();		
+
+		Vector2 startpoint;
+		
+		renderer.setColor(Color.GRAY);
+		startpoint = original.peek();		
+		for (Vector2 next: original)
+		{
+			renderer.line(startpoint, next);
+			startpoint = next;
+		}
+		
+		renderer.setColor(Color.GREEN);
+		startpoint = points.peek();		
 		for (Vector2 next: points)
 		{
 			renderer.line(startpoint, next);
 			startpoint = next;
 		}
+		
+
 	}
 	
 	/**
@@ -208,7 +240,95 @@ public class CatWalk {
 		}
 		return ret;
 	}
-	
-	
-	
+
+	public void cutCatwalk(Array<Vector2> line) {
+		
+			// First we find out where the end points are located;
+			int startidx = -1, endidx = -1; 
+			for (int i = 0; i < points.size; i++)
+			{
+				if (startidx != -1 && endidx != -1)
+					break;
+				if (startidx == -1 && OgamMath.isPointInSegment(points.get(i), points.get((i+1)%points.size),line.first()))
+					startidx = i;
+				if (endidx == -1 && OgamMath.isPointInSegment(points.get(i), points.get((i+1)%points.size),line.peek()))
+					endidx = i;
+			}
+			
+			// creating paths:
+			Array<Vector2> p1 = new Array<Vector2>(true,30,Vector2.class);
+			Array<Vector2> p2 = new Array<Vector2>(true,30,Vector2.class);
+			
+			// Adding nodes from main path
+			int tmpidx;
+			if (endidx == startidx) // special case, if both endpoints are in the same segment - only one gets the entire path
+			{
+				float enddist = OgamMath.manhattanDistance(points.get(endidx),line.peek());
+				float startdist = OgamMath.manhattanDistance(points.get(startidx),line.first());
+				
+				Array<Vector2> tp;
+				if (startdist < enddist) // start points come first
+					tp = p1;
+				else 
+					tp = p2;
+
+				for (int i = 0; i < points.size; i++)
+				{
+					tp.add(new Vector2(points.get((i + endidx + 1)%points.size)));
+				}			
+				
+				
+				// Adding nodes from cut:
+				// TODO: I don't quite understand why the order must be reversed if start and end are in the same segment.
+				// Study this black magic!
+				for (int i = 0; i < line.size; i++)
+					p1.add(new Vector2(line.get(i)));
+				
+				while (line.size > 0) // p2 nodes are added in reverse -- from end to start
+					p2.add(line.pop());
+			}
+			else // both endpoints are in different segments: regular case
+			{
+				tmpidx = (endidx + 1)%points.size;
+				while (tmpidx != (startidx + 1)%points.size)
+				{
+					p2.add(new Vector2(points.get(tmpidx)));
+					tmpidx = (tmpidx + 1)%points.size;
+				}
+				
+				tmpidx = (startidx + 1)%points.size;
+				while (tmpidx != (endidx + 1)%points.size)
+				{
+					p1.add(new Vector2(points.get(tmpidx)));
+					tmpidx = (tmpidx + 1)%points.size;
+				}
+				
+				
+				// Adding nodes from cut:
+				for (int i = 0; i < line.size; i++)
+					p2.add(new Vector2(line.get(i)));
+				
+				while (line.size > 0) // p1 nodes are added in reverse -- from end to start
+					p1.add(line.pop());
+			}
+			
+			// TODO: Have to take into account the presence of enemies, and send them "die" signals
+			double p1area = OgamMath.calcPolygonArea(p1);
+			double p2area = OgamMath.calcPolygonArea(p2);
+			
+			if (p1area > p2area)
+			{
+				points = p1;
+				areacache = p1area;
+			}
+			else
+			{
+				points = p2;
+				areacache = p2area;
+			}
+			
+			pathlength = OgamMath.calcPolygonLength(points);
+			startPosition = points.first();
+			
+	}
 }

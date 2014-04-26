@@ -4,6 +4,7 @@ import org.castelodelego.ld29.Globals;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -58,9 +59,16 @@ public class PlayerShip {
 			moveToCut(dt);
 			break;
 		}
-		
-
 	}
+	
+	public void reset()
+	{
+		goals.clear();
+		cutline.clear();
+		state = ShipStates.MOVING;
+		setPos(rail.getStartPosition().x, rail.getStartPosition().y);
+	}
+	
 
 	
 	/**
@@ -120,15 +128,28 @@ public class PlayerShip {
 
 			cutline.pop();
 			cutline.add(pos.cpy()); // Adding a fixed point in the end
-			
-			cutline.clear(); // Send cutline to the catwalk
-			
+
+			rail.cutCatwalk(cutline);
+			goals.clear();
+
 			state = ShipStates.MOVING;
+			return;
 		}
 		
-		
-		// Test if the cut line is cutting itself
-		
+		// Testing for self-cutting
+		if (cutline.size > 4)
+		{
+			Vector2 start = cutline.get(cutline.size-1);
+			Vector2 end = cutline.get(cutline.size-2);
+			
+			// TODO: exchange "reset" for "DIE"
+			for (int i = 0; i < cutline.size-3; i++)
+				if (Intersector.intersectSegments(start, end, cutline.get(i), cutline.get(i+1),null))
+				{
+					reset();
+					return;
+				}
+		}
 		
 	}
 	
