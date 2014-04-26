@@ -2,6 +2,7 @@ package org.castelodelego.ld29;
 
 import java.util.Random;
 
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,7 +16,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  */
 public class Globals {
-		
+	
+	public static InputMultiplexer multiplexer;
+	
 	public static Preferences scoreloader;
 	public static LogOverlay log;
 	
@@ -37,5 +40,7 @@ public class Globals {
 		
 		dice = new Random();
 		log = new LogOverlay();
+		
+		multiplexer = new InputMultiplexer();
 	}		
 }

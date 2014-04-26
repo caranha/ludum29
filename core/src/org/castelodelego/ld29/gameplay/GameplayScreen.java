@@ -7,6 +7,7 @@ import org.castelodelego.ld29.LD29Game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,6 +40,11 @@ public class GameplayScreen implements Screen {
 	PlayerShip cutter;
 	Array<SimpleEnemy> enemies;
 	
+	Vector2 keymove;
+	
+	InputProcessor gesture;
+	InputProcessor keyboard;
+	
 	public GameplayScreen()
 	{
 		gameCam = new OrthographicCamera();
@@ -46,6 +52,9 @@ public class GameplayScreen implements Screen {
 		polygonbatch = new PolygonSpriteBatch();
 		batch = new SpriteBatch();
 		enemies = new Array<SimpleEnemy>(false,30,SimpleEnemy.class);
+		
+		gesture = new GestureDetector(new GameTouchListener(gameCam,this));
+		keyboard = new GameKeyboardListener(this);
 	}
 
 	public void reset()
@@ -54,6 +63,7 @@ public class GameplayScreen implements Screen {
 		gameCam.setToOrtho(false, 800, 480); // 480,800 is the size of the "virtual" play area
 		touchpoint = new Vector2();
 		projectpoint = new Vector2();
+		keymove = new Vector2();
 		
 		// TODO: ADD reading from stage file;
 		String topimage = "TopImageSample";
@@ -81,6 +91,11 @@ public class GameplayScreen implements Screen {
 	}	
 	
 	
+	public void sendKeyMoveTouch(float dirx, float diry)
+	{
+		keymove.x = dirx;
+		keymove.y = diry;
+	}
 	
 	public void sendTouch(float posx, float posy)
 	{
@@ -101,6 +116,8 @@ public class GameplayScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		if (keymove.x != 0 || keymove.y != 0)
+			sendTouch(cutter.getPos().x + keymove.x, cutter.getPos().y + keymove.y);
 		
 		/** Updating **/
 		cutter.update(delta,catwalkPath,enemies);
@@ -115,10 +132,10 @@ public class GameplayScreen implements Screen {
 		}
 		catwalkPath.collideEnemies(enemies);
 
-		
 		if (catwalkPath.getCoverage() < 0.4)
 			((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
 
+		/***************/
 		/** Rendering **/
 		batch.setProjectionMatrix(gameCam.combined);
 		batch.begin();
@@ -158,16 +175,14 @@ public class GameplayScreen implements Screen {
 
 	@Override
 	public void show() {
-		Gdx.input.setInputProcessor(new GestureDetector(new GameTouchListener(gameCam,this)));
-		// TODO Auto-generated method stub
-
+		Globals.multiplexer.addProcessor(gesture);
+		Globals.multiplexer.addProcessor(keyboard);
 	}
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(null);
-		// TODO Auto-generated method stub
-
+		Globals.multiplexer.removeProcessor(gesture);
+		Globals.multiplexer.removeProcessor(keyboard);
 	}
 
 	@Override

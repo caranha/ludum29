@@ -25,6 +25,7 @@ public class LD29Game extends Game {
 		
 		Globals.init(); // TODO: Send an instance of myself to "globals"
 		
+		Gdx.input.setInputProcessor(Globals.multiplexer);
 		
 		// Creating global resource managers
 		queueAssets();
