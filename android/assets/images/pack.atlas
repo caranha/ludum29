@@ -1,0 +1,19 @@
+
+pack.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Background1
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+Background2
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1

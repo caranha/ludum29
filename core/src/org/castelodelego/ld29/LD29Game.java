@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class LD29Game extends Game {
 
@@ -47,7 +48,7 @@ public class LD29Game extends Game {
 	 */
 	private void queueAssets()
 	{
-		//		Globals.manager.load("images-packed/pack.atlas", TextureAtlas.class); // packed images
+		Globals.manager.load("images/pack.atlas", TextureAtlas.class); // packed images
 	}
 	
 	@Override

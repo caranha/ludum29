@@ -10,13 +10,7 @@ Enemies are taken from the pages as well?
 * Tasklist
 
 ** "Main" tasks
-Graphics: 
-- [ ] Two backgrounds: one that is revealed when the area is cut.
-- [ ] Revealed background is drawn on the area defined by "base
-  catwalk - current catwalk"
-- [ ] Or: Draw full background. Draw base catwalk (under). Draw
-  current background (cover, same as full?)
-
+- [ ] BUG: Not working correctly on Android
 
 ** "Heap" Tasks
 - [ ] Input Multiplexer - separates gameplay/menu input from global input
@@ -44,9 +38,15 @@ Graphics:
 - [X] Make cut end when intersecting the main path
 - [X] Ship can change direction mid cut
 
-** 4-
+** 4- 5f45cef
 Adapting the Path:
 - [X] If the ship crosses its own cut, then it is sent back to its
   initial position.
 - [X] When the cutting finishes, one of the sub polygons is chosen to
   be the new "current" polygon,
+
+** 5- 
+Graphics: 
+- [X] Two backgrounds: one that is revealed when the area is cut.
+- [X] Or: Draw full background. Draw base catwalk (under). Draw
+  current background (cover, same as full?)

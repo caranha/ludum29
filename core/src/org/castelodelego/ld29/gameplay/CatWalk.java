@@ -1,8 +1,16 @@
 package org.castelodelego.ld29.gameplay;
 
+import org.castelodelego.ld29.Globals;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -25,6 +33,12 @@ public class CatWalk {
 	
 	Vector2 startPosition;
 	
+	TextureRegion background_top_region;
+	TextureRegion background_bottom_region;
+	
+	PolygonSprite background_top;
+	PolygonSprite background_bottom;
+	
 	
 	public CatWalk(Array<Vector2> startingpoints)
 	{
@@ -41,7 +55,31 @@ public class CatWalk {
 		areacache = OgamMath.calcPolygonArea(points);
 		pathlength = OgamMath.calcPolygonLength(points);
 		startPosition = points.first();
+		
+		// TODO: I have to dispose of these guys later
+		background_top_region = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("Background2");
+		background_bottom_region = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("Background1");
+		
+		background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
+		background_bottom = new PolygonSprite(createPolygonRegion(background_bottom_region,original));
+		
+		
 	}
+	
+	PolygonRegion createPolygonRegion(TextureRegion img, Array<Vector2> area)
+	{
+		EarClippingTriangulator triangulator = new EarClippingTriangulator();
+		
+		
+		float[] vertexlist = new float[area.size*2];
+		for (int i = 0; i < area.size; i++)
+		{
+			vertexlist[2*i] = area.get(i).x;
+			vertexlist[(2*i)+1] = area.get(i).y;
+		}
+		return (new PolygonRegion(img, vertexlist, triangulator.computeTriangles(vertexlist).items));
+	}
+	
 	
 	public void setStartPosition(Vector2 pos)
 	{
@@ -197,6 +235,12 @@ public class CatWalk {
 		return points.items;
 	}
 	
+	public void render(PolygonSpriteBatch batch)
+	{
+		background_bottom.draw(batch);
+		background_top.draw(batch);
+	}
+	
 	public void debugRender(ShapeRenderer renderer)
 	{
 
@@ -330,5 +374,6 @@ public class CatWalk {
 			pathlength = OgamMath.calcPolygonLength(points);
 			startPosition = points.first();
 			
+			background_top.setRegion(createPolygonRegion(background_top_region,points));			
 	}
 }

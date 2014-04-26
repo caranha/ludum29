@@ -5,16 +5,17 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 public class GameplayScreen implements Screen {
 
 	OrthographicCamera gameCam;
 	ShapeRenderer debugrender;
+	PolygonSpriteBatch polygonbatch;
 	
 	/* debug variables */
 	Vector2 touchpoint;
@@ -28,6 +29,7 @@ public class GameplayScreen implements Screen {
 		gameCam = new OrthographicCamera();
 		gameCam.setToOrtho(false);
 		debugrender = new ShapeRenderer();
+		polygonbatch = new PolygonSpriteBatch();
 	}
 
 	public void reset()
@@ -66,18 +68,20 @@ public class GameplayScreen implements Screen {
 		
 		
 		/** Rendering **/
+		
+		polygonbatch.setProjectionMatrix(gameCam.combined);
+		polygonbatch.begin();
+		catwalkPath.render(polygonbatch);
+		polygonbatch.end();
+		
+		
 		debugrender.setProjectionMatrix(gameCam.combined);
-		
 		debugrender.begin(ShapeType.Line);
-		
 		catwalkPath.debugRender(debugrender);		
 		cutter.debugRender(debugrender);
-		
 		debugrender.setColor(Color.WHITE);
 		debugrender.circle(touchpoint.x, touchpoint.y, 5);
 		debugrender.circle(projectpoint.x, projectpoint.y, 5);
-		
-		
 		debugrender.end();
 	}
 
@@ -114,8 +118,8 @@ public class GameplayScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		polygonbatch.dispose();
+		debugrender.dispose();
 	}
 
 
