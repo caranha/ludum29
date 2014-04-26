@@ -1,7 +1,21 @@
 This is a game project for the Ludum Dare compo.
 
 * Outline
+Qix Game - Each Image/Level is a page in a story book. You "peel" away
+the pages to find out what is under the surface.
+
+Enemies are taken from the pages as well?
+
 
 * Tasklist
+- [X] Log Overlay class --> Map<String,String> that should be
+  displayed every turn
+- [ ] Gameplay package --> Gameplay Scene has inputs
+- [ ] Input multiplexer --> Input is Touch/Mouse for in-cradle
+  movement, swipe/arrow keys for cutting
+
+- [ ] Cradle: List of Vector2 (integers)
+- [ ] Implements: Closest point, add cut, area, inside
+
 
 * Commits
