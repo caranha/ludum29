@@ -1,0 +1,7 @@
+This is a game project for the Ludum Dare compo.
+
+* Outline
+
+* Tasklist
+
+* Commits
