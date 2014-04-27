@@ -5,16 +5,58 @@ filter: Nearest,Nearest
 repeat: none
 BottomImageSample
   rotate: false
-  xy: 2, 484
+  xy: 2, 508
   size: 800, 480
   orig: 800, 480
   offset: 0, 0
   index: -1
 TopImageSample
   rotate: false
-  xy: 2, 2
+  xy: 2, 26
   size: 800, 480
   orig: 800, 480
+  offset: 0, 0
+  index: -1
+line_jagged
+  rotate: false
+  xy: 804, 978
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+line_jagged_h
+  rotate: false
+  xy: 2, 14
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+line_red
+  rotate: false
+  xy: 804, 966
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+line_red_h
+  rotate: false
+  xy: 816, 978
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+line_simple
+  rotate: false
+  xy: 2, 2
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+line_simple_h
+  rotate: false
+  xy: 14, 14
+  size: 10, 10
+  orig: 10, 10
   offset: 0, 0
   index: -1
 
@@ -81,36 +123,71 @@ filter: Nearest,Nearest
 repeat: none
 anim/enemy
   rotate: false
-  xy: 2, 2
+  xy: 170, 24
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 0
 anim/enemy
   rotate: false
-  xy: 24, 2
+  xy: 192, 24
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 1
 anim/enemy
   rotate: false
-  xy: 46, 2
+  xy: 214, 24
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 2
 anim/enemy
   rotate: false
-  xy: 68, 2
+  xy: 170, 2
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 3
 anim/enemy
   rotate: false
-  xy: 90, 2
+  xy: 192, 2
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 4
+anim/scissors_go
+  rotate: false
+  xy: 2, 4
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: 0
+anim/scissors_stop
+  rotate: false
+  xy: 2, 4
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: 0
+anim/scissors_go
+  rotate: false
+  xy: 44, 4
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: 1
+anim/scissors_go_half
+  rotate: false
+  xy: 86, 4
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: 0
+anim/scissors_go_half
+  rotate: false
+  xy: 128, 4
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: 1

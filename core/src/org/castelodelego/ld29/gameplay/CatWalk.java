@@ -4,6 +4,7 @@ import org.castelodelego.ld29.Globals;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 
 
@@ -23,6 +25,12 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class CatWalk {
+	
+	static final TiledDrawable line_jagged_v = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_jagged"));
+	static final TiledDrawable line_jagged_h = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_jagged_h"));
+	static final TiledDrawable line_simple_v = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_simple"));
+	static final TiledDrawable line_simple_h = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_simple_h"));
+	
 	
 	Array<Vector2> original;
 	Array<Vector2> points;
@@ -243,6 +251,55 @@ public class CatWalk {
 		background_bottom.draw(batch);
 		batch.flush(); // Black magick. Somehow if I don't flush the batch, one polygon sprite will influence the other.
 		background_top.draw(batch);
+	}
+	
+	public void renderPath(Batch b)
+	{
+		Vector2 prev;
+		
+		prev = original.peek();		
+		for (Vector2 next: original)
+		{
+			if (Math.abs(prev.x - next.x) < 0.1f) 
+			{  
+
+				float ylow = Math.min(prev.y, next.y);
+				float yhigh = Math.max(prev.y, next.y);
+				float x = prev.x;
+				line_jagged_v.draw(b, x-5, ylow, 10, yhigh-ylow);
+			}
+			else
+			{
+				float xlow = Math.min(prev.x, next.x);
+				float xhigh = Math.max(prev.x, next.x);
+				float y = prev.y;
+
+				line_jagged_h.draw(b, xlow, y-5, xhigh-xlow,10);
+			}
+			prev = next;
+		}
+		
+		prev = points.peek();		
+		for (Vector2 next: points)
+		{
+			if (Math.abs(prev.x - next.x) < 0.1f) 
+			{  
+
+				float ylow = Math.min(prev.y, next.y);
+				float yhigh = Math.max(prev.y, next.y);
+				float x = prev.x;
+				line_simple_v.draw(b, x-5, ylow, 10, yhigh-ylow);
+			}
+			else
+			{
+				float xlow = Math.min(prev.x, next.x);
+				float xhigh = Math.max(prev.x, next.x);
+				float y = prev.y;
+
+				line_simple_h.draw(b, xlow, y-5, xhigh-xlow,10);
+			}
+			prev = next;
+		}
 	}
 	
 	public void debugRender(ShapeRenderer renderer)

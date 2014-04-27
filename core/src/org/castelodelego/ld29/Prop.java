@@ -70,7 +70,6 @@ public class Prop implements Poolable {
 	
 	public void render(Batch b)
 	{
-		//Gdx.app.debug("Prop rendering", "Animation "+anim+", pos: "+pos);
 		b.draw(anim.getKeyFrame(frametimer), pos.x, pos.y);
 	}
 	

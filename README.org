@@ -12,12 +12,9 @@ Enemies are taken from the pages as well?
 ** Current List
 
 - [ ] Needs an indicator for the number of lives
-- [ ] Add proper sprites for player;
 - [ ] Add summoning animation/time for player ship
 - [ ] Add death animation for player;
 - [ ] Add Menu Screen
-- [ ] Add Image for catwalk
-- [ ] Add Image for cutline
 
 - [ ] Fix Keyboard controls
 - [ ] Add Autotracker music
@@ -33,12 +30,18 @@ Enemies are taken from the pages as well?
 - [ ] Add reading level from file
 - [ ] Mysterious Bad index 22 crash bug
 
-** 11- 
+
+** 12-
+- [X] Add proper sprites for player;
+- [X] Add Image for catwalk
+- [X] Add Image for cutline
+
+
+** 11- 0f9fe50
 - [X] Add fadeout of game elements when winning a scenario
   - FadeIn the backscreen on top of everything else.
 - [X] Add game-over when lives are zero
 - [X] Refactor player ship to be destroyed on death
-
 
 ** 10- 368c60e
 - [X] Add Hard Coded Level List and Attributes

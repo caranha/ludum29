@@ -243,6 +243,13 @@ public class GameplayScreen implements Screen {
 		polygonbatch.end();		
 		
 		batch.begin();
+		
+		catwalkPath.renderPath(batch);
+		if (players.size > 0)
+		{	
+			players.peek().renderCutline(batch);
+			players.peek().render(batch);
+		}
 		batch.setColor(proptint);
 		for (Prop p: props)
 			p.render(batch);
@@ -257,22 +264,21 @@ public class GameplayScreen implements Screen {
 		// DEBUG Renders
 		debugrender.setProjectionMatrix(gameCam.combined);
 		debugrender.begin(ShapeType.Line);
-		catwalkPath.debugRender(debugrender);	
+		//catwalkPath.debugRender(debugrender);	
 		
-		if (players.size > 0)
-			players.peek().debugRenderCutline(debugrender);
+		//		if (players.size > 0)
+		//			players.peek().debugRenderCutline(debugrender);
 		
 		debugrender.setColor(Color.WHITE);
 		debugrender.circle(touchpoint.x, touchpoint.y, 5);
 		debugrender.circle(projectpoint.x, projectpoint.y, 5);
 		//for (SimpleEnemy e:enemies)
 		//	e.debugRender(debugrender);
-		debugrender.end();
-		
-		debugrender.begin(ShapeType.Filled);
-		if (players.size > 0)
-			players.peek().debugRender(debugrender);
-		debugrender.end();
+		debugrender.end();		
+		//		debugrender.begin(ShapeType.Filled);
+		//		if (players.size > 0)
+		//			players.peek().debugRender(debugrender);
+		//		debugrender.end();
 		
 		
 		// Drawing fadeins and fadeouts

@@ -3,9 +3,13 @@ package org.castelodelego.ld29.gameplay;
 import org.castelodelego.ld29.Globals;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -15,8 +19,16 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class PlayerShip {
+	
+	static final Animation walk_anim = Globals.animman.get("anim/scissors_stop");
+	static final Animation cut_anim = Globals.animman.get("anim/scissors_go_half");
+	static final TiledDrawable line_sprite_v = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_red"));
+	static final TiledDrawable line_sprite_h = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_red_h"));
+	
+	float animtimer = 0;
+	int animdir = 0;
 
-	enum ShipStates { MOVING, CUTTING };
+	enum ShipStates { SUMMONING, MOVING, CUTTING };
 	Array<Vector2> goals;
 	Array<Vector2> cutline;
 	
@@ -33,14 +45,14 @@ public class PlayerShip {
 
 	
 	public PlayerShip(float x, float y, CatWalk r)
-	{
+	{		
 		pos = new Vector2(x,y);
 		cut_dir = new Vector2(x,y);
 		
 		state = ShipStates.MOVING;
 
 		goals = new Array<Vector2>();
-		cutline = new Array<Vector2>();
+		cutline = new Array<Vector2>();		
 	}
 	
 	
@@ -54,7 +66,8 @@ public class PlayerShip {
 	 */
 	public boolean update(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
-	
+		animtimer += dt/2;
+		
 		switch(state)
 		{
 		case MOVING:
@@ -67,6 +80,8 @@ public class PlayerShip {
 				for (SimpleEnemy e: enemies)
 					if (Intersector.intersectSegmentCircle(cutline.get(i-1), cutline.get(i), e.getPos(), e.getRadius()*e.getRadius()))
 						return true;
+			break;
+		case SUMMONING:
 			break;
 		}
 
@@ -93,11 +108,13 @@ public class PlayerShip {
 		{
 			pos.x += Math.signum(goals.first().x - pos.x)*(move_speed*dt);
 			pos.y = goals.first().y;
+			animdir = (int) (2 - Math.signum(goals.first().x - pos.x));
 		}
 		else
 		{
 			pos.y += Math.signum(goals.first().y - pos.y)*(move_speed*dt);
 			pos.x = goals.first().x;
+			animdir = (int) (1 - Math.signum(goals.first().y - pos.y));
 		}
 			
 		if (goals.first().dst(pos) < 2)
@@ -120,6 +137,8 @@ public class PlayerShip {
 	{
 		pos.x += cut_dir.x*cut_speed*dt;
 		pos.y += cut_dir.y*cut_speed*dt;
+		
+		setAnimDir(cut_dir.x, cut_dir.y);
 		
 		// Test if the cut line is cutting the polygon
 		
@@ -152,6 +171,18 @@ public class PlayerShip {
 		return false;		
 	}
 	
+	private void setAnimDir(float x, float y)
+	{
+		if (Math.signum(y) == 1)
+			animdir = 0;
+		else if (Math.signum(y) == -1)
+			animdir = 2;
+		else if (Math.signum(x) == 1)
+			animdir = 1;
+		else 
+			animdir = 3;
+	}
+	
 	
 	/**
 	 * Does not modify the "targets" array, just copy its contents
@@ -180,8 +211,7 @@ public class PlayerShip {
 				cutline.add(pos.cpy());
 				cutline.add(pos);				
 			}
-			break;
-			
+			break;	
 		case CUTTING:
 			if (cut_dir.x == xdir || cut_dir.y == ydir)
 				return;
@@ -190,8 +220,48 @@ public class PlayerShip {
 			cutline.add(pos.cpy());
 			cutline.add(pos);
 			break;
+		case SUMMONING:
+			break;
 		}
 		
+	}
+	
+	
+	public void renderCutline(Batch b)
+	{
+		// FIXME: When cutting down/right, the line "animates"
+		for (int i = 1; i < cutline.size; i++)
+			if (Math.abs(cutline.get(i-1).x - cutline.get(i).x) < 0.1f) 
+			{  
+
+				float ylow = Math.min(cutline.get(i-1).y, cutline.get(i).y);
+				float yhigh = Math.max(cutline.get(i-1).y, cutline.get(i).y);
+				float x = cutline.get(i-1).x;
+				line_sprite_v.draw(b, x-5, ylow, 10, yhigh-ylow);
+			}
+			else
+			{
+				float xlow = Math.min(cutline.get(i-1).x, cutline.get(i).x);
+				float xhigh = Math.max(cutline.get(i-1).x, cutline.get(i).x);
+				float y = cutline.get(i-1).y;
+
+				line_sprite_h.draw(b, xlow, y-5, xhigh-xlow,10);
+			}
+	}
+	
+	public void render(Batch b)
+	{
+		switch(state)
+		{
+		case SUMMONING:
+			break;
+		case MOVING:
+			b.draw(walk_anim.getKeyFrame(animtimer), pos.x-20, pos.y-20, 20, 20, 40, 40, 1, 1, animdir*-90);
+			break;
+		case CUTTING:
+			b.draw(cut_anim.getKeyFrame(animtimer), pos.x-20, pos.y-20, 20, 20, 40, 40, 1, 1, animdir*-90);
+			break;
+		}
 	}
 	
 	public void debugRender(ShapeRenderer r)
