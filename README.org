@@ -29,7 +29,12 @@ Enemies are taken from the pages as well?
 - [ ] Add geometry information on level definition
 - [ ] Add reading level from file
 
-** 14- 
+** 15-
+- [X] Added 4 levels
+- [X] Game ends after last level
+- [X] Game adds lifes after every level 
+
+** 14- 8e47ae1
 Visual upgrades (and solved 22 crash bug)
 - [X] Needs an indicator for the number of lives
 - [X] Add summoning animation/time for player ship

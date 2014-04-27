@@ -220,10 +220,13 @@ public class GameplayScreen implements Screen {
 			victory_timer -= delta;
 			if (victory_timer < 0)
 			{
-				Globals.gc.addLevel(1);				
-				reset(Globals.levellist[Globals.gc.getLevel()]);
+				Globals.gc.addLives(1);
+				Globals.gc.addLevel(1);	
 				
-				//((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
+				if (Globals.gc.getLevel() == 0)
+					((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
+				else
+					reset(Globals.levellist[Globals.gc.getLevel()]);
 			}			
 			break;
 		}					

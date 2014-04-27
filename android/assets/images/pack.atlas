@@ -102,7 +102,7 @@ levels/farm
   orig: 800, 480
   offset: 0, 0
   index: -1
-levels/maiden
+levels/iceberg1
   rotate: false
   xy: 2, 2
   size: 800, 480
@@ -114,7 +114,45 @@ pack5.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+levels/iceberg2
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/maiden
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack6.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 levels/presentation
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/science1
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack7.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+levels/science2
   rotate: false
   xy: 2, 484
   size: 800, 480
@@ -129,7 +167,45 @@ levels/study
   offset: 0, 0
   index: -1
 
-pack6.png
+pack8.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+levels/tablet1
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/tablet2
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack9.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+levels/thankyou1
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/thankyou2
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack10.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none

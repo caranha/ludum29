@@ -49,12 +49,16 @@ public class Globals {
 		
 		
 		// FIXME: Make level loading from text file
-		gc = new GameContext(3);
+		gc = new GameContext(7);
 		levellist = new Level[gc.getmaxlevel()];
 		int i = 0;
 		levellist[i++] = new Level("levels/city","levels/farm",4,Color.WHITE);
 		levellist[i++] = new Level("levels/crone","levels/maiden",8,Color.WHITE);
-		levellist[i++] = new Level("levels/presentation","levels/study",12,Color.WHITE);		
+		levellist[i++] = new Level("levels/presentation","levels/study",12,Color.WHITE);
+		levellist[i++] = new Level("levels/iceberg1","levels/iceberg2",10,Color.WHITE);
+		levellist[i++] = new Level("levels/tablet1","levels/tablet2",16,Color.WHITE);
+		levellist[i++] = new Level("levels/science1","levels/science2",8,Color.WHITE);
+		levellist[i++] = new Level("levels/thankyou1","levels/thankyou2",2,Color.WHITE);
 	}		
 	
 }
