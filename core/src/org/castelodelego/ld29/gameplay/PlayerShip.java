@@ -44,8 +44,15 @@ public class PlayerShip {
 	}
 	
 	
-	
-	public void update(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
+	/**
+	 * Calculate the player's movement. Returns True if the player DIED
+	 * 
+	 * @param dt time since last frame
+	 * @param rail the CatWalk
+	 * @param enemies array with all enemies that can kill the player
+	 * @return
+	 */
+	public boolean update(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
 	
 		switch(state)
@@ -54,27 +61,17 @@ public class PlayerShip {
 			moveToGoals(dt);
 			break;
 		case CUTTING:
-			moveToCut(dt,rail,enemies);
+			if (moveToCut(dt,rail,enemies))
+				return true;
 			for (int i = 1; i < cutline.size; i++)
 				for (SimpleEnemy e: enemies)
 					if (Intersector.intersectSegmentCircle(cutline.get(i-1), cutline.get(i), e.getPos(), e.getRadius()*e.getRadius()))
-					{
-						reset(rail.getStartPosition());
-						return; // we're done here;
-					}
+						return true;
 			break;
 		}
-	}
-	
-	private void reset(Vector2 startposition)
-	{
-		goals.clear();
-		cutline.clear();
-		state = ShipStates.MOVING;
-		setPos(startposition.x, startposition.y);
-	}
-	
 
+		return false;
+	}
 	
 	/**
 	 * Executes the movement when the player is only moving along the edges. Removes goals from the 
@@ -116,9 +113,10 @@ public class PlayerShip {
 	 * Moves the ship following the cutting pattern. Checks for collision with 
 	 * the cutting line (snake-like) and for reaching the other side of the trail.
 	 * 
-	 * @param dt
+	 * @param dt time since last frame
+	 * @return true if the player has died
 	 */
-	void moveToCut(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
+	boolean moveToCut(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
 		pos.x += cut_dir.x*cut_speed*dt;
 		pos.y += cut_dir.y*cut_speed*dt;
@@ -138,7 +136,7 @@ public class PlayerShip {
 			goals.clear();
 
 			state = ShipStates.MOVING;
-			return;
+			return false;
 		}
 		
 		// Testing for self-cutting
@@ -147,15 +145,11 @@ public class PlayerShip {
 			Vector2 start = cutline.get(cutline.size-1);
 			Vector2 end = cutline.get(cutline.size-2);
 			
-			// TODO: exchange "reset" for "DIE"
 			for (int i = 0; i < cutline.size-3; i++)
 				if (Intersector.intersectSegments(start, end, cutline.get(i), cutline.get(i+1),null))
-				{
-					reset(rail.getStartPosition());
-					return;
-				}
-		}
-		
+					return true;
+		}		
+		return false;		
 	}
 	
 	

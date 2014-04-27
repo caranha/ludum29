@@ -26,30 +26,42 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameplayScreen implements Screen {
 
-	/* Systems */
+	/* Rendering Related */
 	OrthographicCamera gameCam;
-	ShapeRenderer debugrender;
 	PolygonSpriteBatch polygonbatch;
 	SpriteBatch batch;
 
 	Sprite background;
 	Sprite foreground;
 	Color proptint;
+
+	
+	/* State data */ 
+	enum GameStates {PLAY, GAMEOVER, VICTORY};
+	GameStates state = GameStates.PLAY;
+	
+	float fadein_timer = 0.5f;
+	float fadeout_timer = 1.0f;
+	float victory_timer = 2.0f;
+	
 	
 	/* debug variables */
+	ShapeRenderer debugrender;
+
+	/* Control related */
 	Vector2 touchpoint;
 	Vector2 projectpoint;
+	Vector2 keymove;	
+	InputProcessor gesture;
+	InputProcessor keyboard;
+
 	
 	/* Gameplay variables */
 	CatWalk catwalkPath;
-	PlayerShip cutter;
 	Array<SimpleEnemy> enemies;
 	Array<Prop> props;
+	Array<PlayerShip> players;
 	
-	Vector2 keymove;
-	
-	InputProcessor gesture;
-	InputProcessor keyboard;
 	
 	public GameplayScreen()
 	{
@@ -57,11 +69,13 @@ public class GameplayScreen implements Screen {
 		debugrender = new ShapeRenderer();
 		polygonbatch = new PolygonSpriteBatch();
 		batch = new SpriteBatch();
-		enemies = new Array<SimpleEnemy>(false,30,SimpleEnemy.class);
-		props = new Array<Prop>(false,200,Prop.class);
 		
 		gesture = new GestureDetector(new GameTouchListener(gameCam,this));
 		keyboard = new GameKeyboardListener(this);
+		
+		enemies = new Array<SimpleEnemy>(false,30,SimpleEnemy.class);
+		props = new Array<Prop>(false,200,Prop.class);
+		players = new Array<PlayerShip>(false,1,PlayerShip.class);
 	}
 
 	public void reset(Level newlevel)
@@ -91,6 +105,7 @@ public class GameplayScreen implements Screen {
 		for (Prop p:props)
 			Globals.propPool.free(p);
 		props.clear();
+		players.clear();
 		
 		// adding enemies
 		Vector2 epos = new Vector2();
@@ -106,8 +121,10 @@ public class GameplayScreen implements Screen {
 			}
 		}
 		
-		// adding the player
-		cutter = new PlayerShip(catwalkPath.getStartPosition().x, catwalkPath.getStartPosition().y, catwalkPath);		
+		state = GameStates.PLAY;
+		fadein_timer = 0.5f;
+		fadeout_timer = 1.0f;
+		victory_timer = 3.0f;
 	}	
 	
 	public void addProp(Prop p)
@@ -115,8 +132,6 @@ public class GameplayScreen implements Screen {
 		props.add(p);
 	}
 	
-	
-
 	void sendKeyMoveTouch(float dirx, float diry)
 	{
 		keymove.x = dirx;
@@ -124,62 +139,100 @@ public class GameplayScreen implements Screen {
 	}	
 	void sendTouch(float posx, float posy)
 	{
-		touchpoint.set(posx, posy);
-		projectpoint = catwalkPath.closestPoint(touchpoint);
-		catwalkPath.shortestPath(cutter.getPos(), projectpoint);
-		cutter.MoveTo(catwalkPath.shortestPath(cutter.getPos(), projectpoint));
+		if (players.size > 0)
+		{
+			touchpoint.set(posx, posy);
+			projectpoint = catwalkPath.closestPoint(touchpoint);
+			catwalkPath.shortestPath(players.peek().getPos(), projectpoint);
+			players.peek().MoveTo(catwalkPath.shortestPath(players.peek().getPos(), projectpoint));
+		}
 	}
 	void sendFling(int moveX, int moveY) {
-		cutter.CutTo(moveX, moveY,catwalkPath);
+		if (players.size > 0)
+			players.peek().CutTo(moveX, moveY,catwalkPath);
 	}
 
 	
 	private void update(float delta)
 	{
+		if (fadein_timer > 0)
+			fadein_timer -= delta;
 		
-		if (keymove.x != 0 || keymove.y != 0)
-			sendTouch(cutter.getPos().x + keymove.x, cutter.getPos().y + keymove.y);
-		
-		cutter.update(delta,catwalkPath,enemies);
+		switch (state)
+		{
+		case PLAY:
+			if (players.size > 0)			
+			{
+				if (keymove.x != 0 || keymove.y != 0)
+					sendTouch(players.peek().getPos().x + keymove.x, players.peek().getPos().y + keymove.y);
 
-		Iterator<SimpleEnemy> iter = enemies.iterator();
-		while (iter.hasNext())
-		{
-			SimpleEnemy aux = iter.next();
-			aux.update(delta);
-			if (aux.isAlive() == false)
-				iter.remove();
-		}
-		
-		Iterator<Prop> iterProp = props.iterator();
-		while (iterProp.hasNext())
-		{
-			Prop aux = iterProp.next();
-			aux.update(delta);
-			if (aux.isDead())
-			{				
-				iterProp.remove();
-				Globals.propPool.free(aux);
+				// Player update returns true if the player died;
+				if (players.peek().update(delta,catwalkPath,enemies))
+				{
+					Globals.gc.addLives(-1);
+					players.clear();
+				}
 			}
-		}
-		
-		
-		catwalkPath.collideEnemies(enemies);
-
-		// End of worls conditions
-		// TODO: Make a proper state machine for this
-		if (catwalkPath.getCoverage() < 0.2)
-		{	
-			Globals.gc.addLevel(1);
-			((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
-		}
-
+			else // no players on the board, try to add a new player				
+				if (Globals.gc.getLives() > 0)
+					players.add(new PlayerShip(catwalkPath.getStartPosition().x, catwalkPath.getStartPosition().y, catwalkPath));
+			
+			Iterator<SimpleEnemy> iter = enemies.iterator();
+			while (iter.hasNext())
+			{
+				SimpleEnemy aux = iter.next();
+				aux.update(delta);
+				if (aux.isAlive() == false)
+					iter.remove();
+			}		
+			Iterator<Prop> iterProp = props.iterator();
+			while (iterProp.hasNext())
+			{	
+				Prop aux = iterProp.next();
+				aux.update(delta);
+				if (aux.isDead())
+				{				
+					iterProp.remove();
+					Globals.propPool.free(aux);
+				}
+			}			
+			catwalkPath.collideEnemies(enemies);
+			
+			if (Globals.gc.getLives() <= 0)
+				state = GameStates.GAMEOVER;
+			if (catwalkPath.getCoverage() < 0.2)
+				state = GameStates.VICTORY;
+			break;
+			
+			
+		case GAMEOVER:
+			fadeout_timer -= delta;
+			if (fadeout_timer < 0)
+			{
+				Globals.gc.init();
+				((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
+			}
+			break;
+		case VICTORY:
+			victory_timer -= delta;
+			if (victory_timer < 0)
+			{
+				Globals.gc.addLevel(1);				
+				reset(Globals.levellist[Globals.gc.getLevel()]);
+				
+				//((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
+			}			
+			break;
+		}					
 	}
 	
 	private void draw ()
 	{
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
 		batch.setProjectionMatrix(gameCam.combined);
 		
 		
@@ -193,6 +246,11 @@ public class GameplayScreen implements Screen {
 		batch.setColor(proptint);
 		for (Prop p: props)
 			p.render(batch);
+		
+		if (state == GameStates.VICTORY)
+		{
+			foreground.draw(batch,Math.min(3-victory_timer,1));
+		}			
 		batch.end();
 		
 		
@@ -200,8 +258,10 @@ public class GameplayScreen implements Screen {
 		debugrender.setProjectionMatrix(gameCam.combined);
 		debugrender.begin(ShapeType.Line);
 		catwalkPath.debugRender(debugrender);	
-		cutter.debugRenderCutline(debugrender);
-
+		
+		if (players.size > 0)
+			players.peek().debugRenderCutline(debugrender);
+		
 		debugrender.setColor(Color.WHITE);
 		debugrender.circle(touchpoint.x, touchpoint.y, 5);
 		debugrender.circle(projectpoint.x, projectpoint.y, 5);
@@ -210,8 +270,25 @@ public class GameplayScreen implements Screen {
 		debugrender.end();
 		
 		debugrender.begin(ShapeType.Filled);
-		cutter.debugRender(debugrender);
+		if (players.size > 0)
+			players.peek().debugRender(debugrender);
 		debugrender.end();
+		
+		
+		// Drawing fadeins and fadeouts
+		debugrender.begin(ShapeType.Filled);
+		if (fadein_timer > 0)
+		{
+			debugrender.setColor(1,1,1,2*fadein_timer);
+			debugrender.rect(0, 0, gameCam.viewportWidth, gameCam.viewportWidth);		
+		}
+		if (state == GameStates.GAMEOVER)
+		{
+			debugrender.setColor(1,1,1,1-fadeout_timer);
+			debugrender.rect(0, 0, gameCam.viewportWidth, gameCam.viewportWidth);
+		}
+		debugrender.end();
+		// End Drawing Fade
 	}
 	
 	

@@ -11,18 +11,15 @@ Enemies are taken from the pages as well?
 
 ** Current List
 
-- [ ] Add fadeout of game elements when winning a scenario
-  - FadeIn the backscreen on top of everything else.
-- [ ] Add game-over when lives are zero
 - [ ] Needs an indicator for the number of lives
-- [ ] Refactor player ship to be destroyed on death
-- [ ] Fix Keyboard controls
+- [ ] Add proper sprites for player;
 - [ ] Add summoning animation/time for player ship
 - [ ] Add death animation for player;
-- [ ] Add proper sprites for player;
+- [ ] Add Menu Screen
 - [ ] Add Image for catwalk
 - [ ] Add Image for cutline
-- [ ] Add Menu Screen
+
+- [ ] Fix Keyboard controls
 - [ ] Add Autotracker music
 - [ ] Add "bam" Sound when player dies
 - [ ] Add "glup" Sound when screen is cut
@@ -30,12 +27,20 @@ Enemies are taken from the pages as well?
 - [ ] Add "woosh" sound when swipe
 - [ ] Add visual touch feedback
 - [ ] Add visual woosh feedback
+
 - [ ] Make Collision More efficient
 - [ ] Add geometry information on level definition
 - [ ] Add reading level from file
-- [ ] Mysterious out of memory bug when cutting
+- [ ] Mysterious Bad index 22 crash bug
 
-** 10- 
+** 11- 
+- [X] Add fadeout of game elements when winning a scenario
+  - FadeIn the backscreen on top of everything else.
+- [X] Add game-over when lives are zero
+- [X] Refactor player ship to be destroyed on death
+
+
+** 10- 368c60e
 - [X] Add Hard Coded Level List and Attributes
 - [X] Add 3 levels
 - [X] Add Level Progression
