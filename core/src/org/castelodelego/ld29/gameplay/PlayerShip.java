@@ -1,6 +1,7 @@
 package org.castelodelego.ld29.gameplay;
 
 import org.castelodelego.ld29.Globals;
+import org.castelodelego.ld29.LD29Game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -23,16 +24,20 @@ public class PlayerShip {
 	static final Animation walk_anim = Globals.animman.get("anim/scissors_stop");
 	static final Animation cut_anim = Globals.animman.get("anim/scissors_go_half");
 	static final TiledDrawable line_sprite_v = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_red"));
-	static final TiledDrawable line_sprite_h = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_red_h"));
+	static final TiledDrawable line_sprite_h = new TiledDrawable(((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).findRegion("line_red_h"));	
+	static final Animation summon_anim = Globals.animman.get("anim/summon");
+	static final Animation death = Globals.animman.get("anim/scissors_die");
 	
 	float animtimer = 0;
 	int animdir = 0;
+	float summontimer = 1f;
 
 	enum ShipStates { SUMMONING, MOVING, CUTTING };
 	Array<Vector2> goals;
 	Array<Vector2> cutline;
 	
 	Vector2 pos;
+	Vector2 anim_pos = new Vector2();
 	
 	ShipStates state;
 	
@@ -49,7 +54,7 @@ public class PlayerShip {
 		pos = new Vector2(x,y);
 		cut_dir = new Vector2(x,y);
 		
-		state = ShipStates.MOVING;
+		state = ShipStates.SUMMONING;
 
 		goals = new Array<Vector2>();
 		cutline = new Array<Vector2>();		
@@ -62,11 +67,12 @@ public class PlayerShip {
 	 * @param dt time since last frame
 	 * @param rail the CatWalk
 	 * @param enemies array with all enemies that can kill the player
-	 * @return
+	 * @return true if the scissors is dead
 	 */
 	public boolean update(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
 		animtimer += dt/2;
+
 		
 		switch(state)
 		{
@@ -75,13 +81,29 @@ public class PlayerShip {
 			break;
 		case CUTTING:
 			if (moveToCut(dt,rail,enemies))
+			{
+				((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(pos, death).addPos(new Vector2(-40,-40)).setfreq(0.8f));
 				return true;
+			}
 			for (int i = 1; i < cutline.size; i++)
 				for (SimpleEnemy e: enemies)
 					if (Intersector.intersectSegmentCircle(cutline.get(i-1), cutline.get(i), e.getPos(), e.getRadius()*e.getRadius()))
+					{
+						((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(pos, death).addPos(new Vector2(-40,-40)).setfreq(0.8f));
 						return true;
+					}
 			break;
 		case SUMMONING:
+			
+			summontimer -= dt;			
+			for (int i = 0; i < 6; i++)
+			{
+				anim_pos.x = (float) Math.cos((i+summontimer)*Math.PI/3)*400*summontimer + pos.x;
+				anim_pos.y = (float) Math.sin((i+summontimer)*Math.PI/3)*400*summontimer + pos.y;
+				((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(anim_pos, summon_anim).addPos(new Vector2(-10,-10)).setfreq(0.5f));
+			}
+			if (summontimer < 0)
+				state = ShipStates.MOVING;			
 			break;
 		}
 

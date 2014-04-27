@@ -11,31 +11,37 @@ Enemies are taken from the pages as well?
 
 ** Current List
 
-- [X] Needs an indicator for the number of lives
-- [ ] Add summoning animation/time for player ship
-- [ ] Add death animation for player;
+- [ ] Add Sounds
+  - [ ] Autotracker music
+  - [ ] Bam sound when player dies
+  - [ ] Glup sound when screen cut is complete
+  - [ ] Ping sound when tapping
+  - [ ] Woosh sound when swiping
+  - [ ] Choki Choki sound when cutting
+  - [ ] Bling bling bling sound when winning
+
 - [ ] Add visual touch feedback
 - [ ] Add visual woosh feedback
-- [ ] Add Menu Screen
 
 - [ ] Fix Keyboard controls
-- [ ] Add Autotracker music
-- [ ] Add "bam" Sound when player dies
-- [ ] Add "glup" Sound when screen is cut
-- [ ] Add "ping" sound when tap
-- [ ] Add "woosh" sound when swipe
-
+- [ ] Add Keyboard control instructions
 - [ ] Make Collision More efficient
 - [ ] Add geometry information on level definition
 - [ ] Add reading level from file
-- [ ] Mysterious Bad index 22 crash bug
 
+** 14- 
+Visual upgrades (and solved 22 crash bug)
+- [X] Needs an indicator for the number of lives
+- [X] Add summoning animation/time for player ship
+- [X] Add death animation for player;
+- [X] Add Menu Screen
+- [X] Mysterious Bad index 22 crash bug
 
-** 12-
+** 13- Another Release 69a366e
+** 12- 3d74e56
 - [X] Add proper sprites for player;
 - [X] Add Image for catwalk
 - [X] Add Image for cutline
-
 
 ** 11- 0f9fe50
 - [X] Add fadeout of game elements when winning a scenario

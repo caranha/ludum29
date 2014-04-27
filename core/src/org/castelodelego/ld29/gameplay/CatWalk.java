@@ -2,6 +2,7 @@ package org.castelodelego.ld29.gameplay;
 
 import org.castelodelego.ld29.Globals;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -368,6 +369,8 @@ public class CatWalk {
 	 */
 	public void pushCutline(Array<Vector2> line, Array<SimpleEnemy> enemies) {
 		
+		
+			Gdx.app.debug("Pushline", "line pushed has "+line.size+" vertexes");		
 			// First we find out where the end points are located;
 			int startidx = -1, endidx = -1; 
 			for (int i = 0; i < points.size; i++)
@@ -474,9 +477,20 @@ public class CatWalk {
 					e.kill();
 			}
 			
+			Gdx.app.debug("Pushline", "Area 1: "+p1);
+			Gdx.app.debug("Pushline", "Area 2: "+p2);
+			Gdx.app.debug("Pushline", "Final areas have (1): "+p1.size+" points and (2): "+p2.size+" points");
+			Gdx.app.debug("Pushline", "Area chosen has: "+points.size+" points");
+			
 			pathlength = OgamMath.calcPolygonLength(points);
 			startPosition = points.first();
-			background_top.setRegion(createPolygonRegion(background_top_region,points));
+			
+			// BLACK MAGIC! using set region creates bugs from time to time
+			// Find out why LibGDX does this to me.
+			background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
+			//background_top.setRegion(createPolygonRegion(background_top_region,points));
+			
+			
 			Globals.log.addMessage("Coverage", "Coverage: "+getCoverage());
 	}
 }
