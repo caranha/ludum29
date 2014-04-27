@@ -7,6 +7,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Pool;
 
 
 /**
@@ -16,19 +17,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  */
 public class Globals {
-	
-	public static InputMultiplexer multiplexer;
+
+	public static final Random dice = new Random();
+    public static final Pool<Prop> propPool = new Pool<Prop>() {
+    @Override
+    protected Prop newObject() {
+        return new Prop();
+    }
+    };
+	public static final InputMultiplexer multiplexer = new InputMultiplexer();	
 	
 	public static Preferences scoreloader;
 	public static LogOverlay log;
-	
 	public static AssetManager manager;
 	public static AnimationManager animman;
 	public static SpriteBatch batch;
-	public static Random dice;
-		
 	public static BitmapFont debugtext;
-	
 	
 	static void init()
 	{
@@ -37,10 +41,6 @@ public class Globals {
 		batch = new SpriteBatch();
 		animman = new AnimationManager();
 		manager = new AssetManager();
-		
-		dice = new Random();
 		log = new LogOverlay();
-		
-		multiplexer = new InputMultiplexer();
 	}		
 }

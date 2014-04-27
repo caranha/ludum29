@@ -1,32 +1,54 @@
 package org.castelodelego.ld29.gameplay;
 
 import org.castelodelego.ld29.Globals;
-
+import org.castelodelego.ld29.LD29Game;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class SimpleEnemy {
 
+	static final Animation walkanim = Globals.animman.get("anim/enemy");
+	static final float animinterval = 0.15f;
+
+	
+	
+	
 	int weight = 1;
-	float radius = 10;
+	float radius = 10;	
 	float speed = 75;
 	boolean alive = true;
+	float animdelay;
+
 	
 	Vector2 pos;
 	Vector2 dir;
+	Vector2 offset;
+	
+
+	
 	
 	public SimpleEnemy(float x, float y)
 	{
 		pos = new Vector2(x,y);
 		dir = new Vector2(Globals.dice.nextFloat()-0.5f,Globals.dice.nextFloat()-0.5f).nor();
+		offset = new Vector2(-1*radius, -1*radius);
+		animdelay = 0;
 	}
 	
 	public void update(float dt)
 	{
 		pos.x += dir.x*dt*speed;
 		pos.y += dir.y*dt*speed;
+		
+		animdelay += dt;
+		if (animdelay > animinterval)
+		{
+			animdelay = 0;
+			Globals.log.addMessage("Animation", "Animation Address: "+walkanim);
+			((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(pos, walkanim).addPos(offset).setfreq(0.5f));
+		}
 	}
 	
 	/**
@@ -77,11 +99,6 @@ public class SimpleEnemy {
 		return alive;
 	}
 	
-	
-	public void render(Batch batch)
-	{
-		
-	}
 	
 	public void debugRender(ShapeRenderer s)
 	{

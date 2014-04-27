@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
@@ -26,8 +27,7 @@ public class SplashScreen implements Screen {
 	public SplashScreen()
 	{
 		loaddone = false;
-//		loadAnimDone = false;
-		loadAnimDone = true;
+		loadAnimDone = false;
 		
 
 		lineDrawer = new ShapeRenderer();
@@ -61,10 +61,10 @@ public class SplashScreen implements Screen {
 		//	loadprogress = GdxGameMain.manager.getProgress(); // 0-1 loading progress, if I need a loading bar
 		
 		// load animations
-//		if (loaddone == true && loadAnimDone == false)
-//		{	
-//			loadAnimDone = (Globals.animman.loadAnimations(Globals.manager.get("images-packed/pack.atlas", TextureAtlas.class),delta));
-//		}
+		if (loaddone == true && loadAnimDone == false)
+		{	
+			loadAnimDone = (Globals.animman.loadAnimations(Globals.manager.get("images/pack.atlas", TextureAtlas.class),delta));
+		}
 		
 		// splash screen fade crontrol
 		time = time+delta;		

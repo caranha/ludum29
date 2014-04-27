@@ -3,6 +3,7 @@ package org.castelodelego.ld29.gameplay;
 import java.util.Iterator;
 
 import org.castelodelego.ld29.Globals;
+import org.castelodelego.ld29.Prop;
 import org.castelodelego.ld29.LD29Game;
 
 import com.badlogic.gdx.Game;
@@ -39,6 +40,7 @@ public class GameplayScreen implements Screen {
 	CatWalk catwalkPath;
 	PlayerShip cutter;
 	Array<SimpleEnemy> enemies;
+	Array<Prop> props;
 	
 	Vector2 keymove;
 	
@@ -52,6 +54,7 @@ public class GameplayScreen implements Screen {
 		polygonbatch = new PolygonSpriteBatch();
 		batch = new SpriteBatch();
 		enemies = new Array<SimpleEnemy>(false,30,SimpleEnemy.class);
+		props = new Array<Prop>(false,200,Prop.class);
 		
 		gesture = new GestureDetector(new GameTouchListener(gameCam,this));
 		keyboard = new GameKeyboardListener(this);
@@ -74,6 +77,11 @@ public class GameplayScreen implements Screen {
 		catwalkPath = new CatWalk(DebugLevel.simpleRectangle(),topimage,bottomimage);
 		
 		enemies.clear();
+		
+		for (Prop p:props)
+			Globals.propPool.free(p);
+		props.clear();
+		
 		Vector2 epos = new Vector2();
 		while (totalweight > 0)
 		{
@@ -90,36 +98,36 @@ public class GameplayScreen implements Screen {
 		cutter = new PlayerShip(catwalkPath.getStartPosition().x, catwalkPath.getStartPosition().y, catwalkPath);		
 	}	
 	
+	public void addProp(Prop p)
+	{
+		props.add(p);
+	}
 	
-	public void sendKeyMoveTouch(float dirx, float diry)
+	
+
+	void sendKeyMoveTouch(float dirx, float diry)
 	{
 		keymove.x = dirx;
 		keymove.y = diry;
-	}
-	
-	public void sendTouch(float posx, float posy)
+	}	
+	void sendTouch(float posx, float posy)
 	{
 		touchpoint.set(posx, posy);
 		projectpoint = catwalkPath.closestPoint(touchpoint);
 		catwalkPath.shortestPath(cutter.getPos(), projectpoint);
 		cutter.MoveTo(catwalkPath.shortestPath(cutter.getPos(), projectpoint));
 	}
-
-	public void sendFling(int moveX, int moveY) {
+	void sendFling(int moveX, int moveY) {
 		cutter.CutTo(moveX, moveY,catwalkPath);
 	}
 
 	
-	
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	private void update(float delta)
+	{
 		
 		if (keymove.x != 0 || keymove.y != 0)
 			sendTouch(cutter.getPos().x + keymove.x, cutter.getPos().y + keymove.y);
 		
-		/** Updating **/
 		cutter.update(delta,catwalkPath,enemies);
 
 		Iterator<SimpleEnemy> iter = enemies.iterator();
@@ -130,26 +138,49 @@ public class GameplayScreen implements Screen {
 			if (aux.isAlive() == false)
 				iter.remove();
 		}
+		
+		Iterator<Prop> iterProp = props.iterator();
+		while (iterProp.hasNext())
+		{
+			Prop aux = iterProp.next();
+			aux.update(delta);
+			if (aux.isDead())
+			{				
+				iterProp.remove();
+				Globals.propPool.free(aux);
+			}
+		}
+		
+		
 		catwalkPath.collideEnemies(enemies);
 
+		// End of worls conditions
 		if (catwalkPath.getCoverage() < 0.4)
 			((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
 
-		/***************/
-		/** Rendering **/
+	}
+	
+	private void draw ()
+	{
+		Gdx.gl.glClearColor(0, 0, 0, 0);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(gameCam.combined);
-		batch.begin();
-		background.draw(batch);
-		for (SimpleEnemy e:enemies)
-			e.render(batch);
-		batch.end();
+		
 		
 		polygonbatch.setProjectionMatrix(gameCam.combined);
 		polygonbatch.begin();
+		background.draw(polygonbatch);
 		catwalkPath.render(polygonbatch);
-		polygonbatch.end();
+		polygonbatch.end();		
+		
+		batch.begin();
+		//background.draw(batch);
+		for (Prop p: props)
+			p.render(batch);
+		batch.end();
 		
 		
+		// DEBUG Renders
 		debugrender.setProjectionMatrix(gameCam.combined);
 		debugrender.begin(ShapeType.Line);
 		catwalkPath.debugRender(debugrender);	
@@ -158,15 +189,28 @@ public class GameplayScreen implements Screen {
 		debugrender.setColor(Color.WHITE);
 		debugrender.circle(touchpoint.x, touchpoint.y, 5);
 		debugrender.circle(projectpoint.x, projectpoint.y, 5);
+		//for (SimpleEnemy e:enemies)
+		//	e.debugRender(debugrender);
 		debugrender.end();
 		
 		debugrender.begin(ShapeType.Filled);
 		cutter.debugRender(debugrender);
-		for (SimpleEnemy e:enemies)
-			e.debugRender(debugrender);
 		debugrender.end();
 	}
+	
+	
+	
+	@Override
+	public void render(float delta) {
+		update(delta);
+		draw();
+	}
 
+	
+	
+	
+	
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
@@ -199,6 +243,7 @@ public class GameplayScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		batch.dispose();
 		polygonbatch.dispose();
 		debugrender.dispose();
 	}
