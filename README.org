@@ -11,26 +11,41 @@ Enemies are taken from the pages as well?
 
 ** Current List
 
-- [ ] Add "animation" array in the gameplay scene
-- [ ] Add Hard Coded Level List and Attributes
-  - Add 3 levels
-- [ ] Add Level Progression
 - [ ] Add fadeout of game elements when winning a scenario
   - FadeIn the backscreen on top of everything else.
 - [ ] Add game-over when lives are zero
+- [ ] Needs an indicator for the number of lives
 - [ ] Refactor player ship to be destroyed on death
+- [ ] Fix Keyboard controls
 - [ ] Add summoning animation/time for player ship
-- [ ] Add death animation for player ship and enemies
-- [ ] Add proper sprites for player ship and enemies
+- [ ] Add death animation for player;
+- [ ] Add proper sprites for player;
+- [ ] Add Image for catwalk
+- [ ] Add Image for cutline
 - [ ] Add Menu Screen
 - [ ] Add Autotracker music
 - [ ] Add "bam" Sound when player dies
 - [ ] Add "glup" Sound when screen is cut
 - [ ] Add "ping" sound when tap
 - [ ] Add "woosh" sound when swipe
+- [ ] Add visual touch feedback
+- [ ] Add visual woosh feedback
 - [ ] Make Collision More efficient
+- [ ] Add geometry information on level definition
+- [ ] Add reading level from file
+- [ ] Mysterious out of memory bug when cutting
 
-** 8-
+** 10- 
+- [X] Add Hard Coded Level List and Attributes
+- [X] Add 3 levels
+- [X] Add Level Progression
+
+** 9- 11a846b
+- [X] Add animation for the enemies
+- [X] Add death animation for the enemies
+- [X] Add "animation" array in the gameplay scene
+
+** 8- 572711e
 - [X] Add Keyboard Input
 
 ** 7- 8d9affb

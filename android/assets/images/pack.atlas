@@ -22,6 +22,63 @@ pack2.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+levels/city
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/crone
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+levels/farm
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/maiden
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack4.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+levels/presentation
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/study
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack5.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
 anim/enemy
   rotate: false
   xy: 2, 2

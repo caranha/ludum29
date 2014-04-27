@@ -3,6 +3,7 @@ package org.castelodelego.ld29.gameplay;
 import java.util.Iterator;
 
 import org.castelodelego.ld29.Globals;
+import org.castelodelego.ld29.Level;
 import org.castelodelego.ld29.Prop;
 import org.castelodelego.ld29.LD29Game;
 
@@ -30,7 +31,10 @@ public class GameplayScreen implements Screen {
 	ShapeRenderer debugrender;
 	PolygonSpriteBatch polygonbatch;
 	SpriteBatch batch;
+
 	Sprite background;
+	Sprite foreground;
+	Color proptint;
 	
 	/* debug variables */
 	Vector2 touchpoint;
@@ -60,28 +64,35 @@ public class GameplayScreen implements Screen {
 		keyboard = new GameKeyboardListener(this);
 	}
 
-	public void reset()
+	public void reset(Level newlevel)
 	{
 
+		// loading level info
+		String topimage = newlevel.topimage;
+		String bottomimage = newlevel.bottomimage;
+		int totalweight = newlevel.enemyweight;
+		proptint = newlevel.enemytint;
+
+
+		// starting up variables
+		// TODO: replace Debuglevel with something more sane
+		// Debuglevel controls the catwalk geometry
 		gameCam.setToOrtho(false, 800, 480); // 480,800 is the size of the "virtual" play area
 		touchpoint = new Vector2();
 		projectpoint = new Vector2();
 		keymove = new Vector2();
-		
-		// TODO: ADD reading from stage file;
-		String topimage = "TopImageSample";
-		String bottomimage = "BottomImageSample";
-		int totalweight = 10;
 
 		background = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(topimage);
+		foreground = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(bottomimage);
 		catwalkPath = new CatWalk(DebugLevel.simpleRectangle(),topimage,bottomimage);
 		
+		// clearing things
 		enemies.clear();
-		
 		for (Prop p:props)
 			Globals.propPool.free(p);
 		props.clear();
 		
+		// adding enemies
 		Vector2 epos = new Vector2();
 		while (totalweight > 0)
 		{
@@ -95,6 +106,7 @@ public class GameplayScreen implements Screen {
 			}
 		}
 		
+		// adding the player
 		cutter = new PlayerShip(catwalkPath.getStartPosition().x, catwalkPath.getStartPosition().y, catwalkPath);		
 	}	
 	
@@ -155,8 +167,12 @@ public class GameplayScreen implements Screen {
 		catwalkPath.collideEnemies(enemies);
 
 		// End of worls conditions
-		if (catwalkPath.getCoverage() < 0.4)
+		// TODO: Make a proper state machine for this
+		if (catwalkPath.getCoverage() < 0.2)
+		{	
+			Globals.gc.addLevel(1);
 			((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.mainScreen);
+		}
 
 	}
 	
@@ -174,7 +190,7 @@ public class GameplayScreen implements Screen {
 		polygonbatch.end();		
 		
 		batch.begin();
-		//background.draw(batch);
+		batch.setColor(proptint);
 		for (Prop p: props)
 			p.render(batch);
 		batch.end();

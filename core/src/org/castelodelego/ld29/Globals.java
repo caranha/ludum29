@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Pool;
@@ -34,6 +35,9 @@ public class Globals {
 	public static SpriteBatch batch;
 	public static BitmapFont debugtext;
 	
+	public static GameContext gc;
+	public static Level[] levellist;
+	
 	static void init()
 	{
 		debugtext = new BitmapFont();
@@ -42,5 +46,15 @@ public class Globals {
 		animman = new AnimationManager();
 		manager = new AssetManager();
 		log = new LogOverlay();
+		
+		
+		// FIXME: Make level loading from text file
+		gc = new GameContext(3);
+		levellist = new Level[gc.getmaxlevel()];
+		int i = 0;
+		levellist[i++] = new Level("levels/city","levels/farm",4,Color.WHITE);
+		levellist[i++] = new Level("levels/crone","levels/maiden",8,Color.WHITE);
+		levellist[i++] = new Level("levels/presentation","levels/study",12,Color.WHITE);		
 	}		
+	
 }

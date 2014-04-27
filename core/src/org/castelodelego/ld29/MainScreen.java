@@ -19,7 +19,7 @@ public class MainScreen implements Screen {
 		timeout += delta;
 		if (timeout > 2)
 		{
-			((GameplayScreen) LD29Game.gameplayScreen).reset();
+			((GameplayScreen) LD29Game.gameplayScreen).reset(Globals.levellist[Globals.gc.getLevel()]);
 			((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.gameplayScreen);
 		}
 		

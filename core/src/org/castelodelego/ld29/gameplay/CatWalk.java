@@ -43,8 +43,8 @@ public class CatWalk {
 	
 	public CatWalk(Array<Vector2> startingpoints, String topimage, String bottomimage)
 	{
-		points = new Array<Vector2>(true, 30, Vector2.class);
-		original = new Array<Vector2>(true, 30, Vector2.class);
+		points = new Array<Vector2>(true, 100, Vector2.class);
+		original = new Array<Vector2>(true, 100, Vector2.class);
 		
 		for (Vector2 point:startingpoints)
 		{
