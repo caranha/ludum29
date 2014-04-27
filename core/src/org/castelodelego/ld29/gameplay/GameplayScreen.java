@@ -11,6 +11,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -63,6 +64,9 @@ public class GameplayScreen implements Screen {
 	Array<SimpleEnemy> enemies;
 	Array<Prop> props;
 	Array<PlayerShip> players;
+	
+	/* Sound */
+	Sound victory;
 	
 	
 	public GameplayScreen()
@@ -128,6 +132,8 @@ public class GameplayScreen implements Screen {
 		fadein_timer = 0.5f;
 		fadeout_timer = 1.0f;
 		victory_timer = 3.0f;
+		
+		victory = Globals.manager.get("sounds/Victory.ogg",Sound.class);
 	}	
 	
 	public void addProp(Prop p)
@@ -204,12 +210,16 @@ public class GameplayScreen implements Screen {
 			if (Globals.gc.getLives() <= 0)
 				state = GameStates.GAMEOVER;
 			if (catwalkPath.getCoverage() < 0.2)
+			{
 				state = GameStates.VICTORY;
+				victory.play(0.7f);
+			}
 			break;
 			
 			
 		case GAMEOVER:
 			fadeout_timer -= delta;
+			Globals.gamesong.setVolume(Math.max(0, fadeout_timer));
 			if (fadeout_timer < 0)
 			{
 				Globals.gc.init();
@@ -330,8 +340,6 @@ public class GameplayScreen implements Screen {
 	
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -349,14 +357,10 @@ public class GameplayScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

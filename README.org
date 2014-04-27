@@ -10,16 +10,6 @@ Enemies are taken from the pages as well?
 * Tasklist
 
 ** Current List
-
-- [ ] Add Sounds
-  - [ ] Autotracker music
-  - [ ] Bam sound when player dies
-  - [ ] Glup sound when screen cut is complete
-  - [ ] Ping sound when tapping
-  - [ ] Woosh sound when swiping
-  - [ ] Choki Choki sound when cutting
-  - [ ] Bling bling bling sound when winning
-
 - [ ] Add visual touch feedback
 - [ ] Add visual woosh feedback
 
@@ -29,7 +19,17 @@ Enemies are taken from the pages as well?
 - [ ] Add geometry information on level definition
 - [ ] Add reading level from file
 
-** 15-
+** 16- Compo Submission 1
+- [X] Add Sounds
+  - [X] Autotracker music
+  - [X] Bam sound when player dies
+  - [X] Glup sound when screen cut is complete
+  - [X] Ping sound when tapping
+  - [X] Woosh sound when swiping
+  - [X] Choki Choki sound when cutting
+  - [X] Bling bling bling sound when winning
+
+** 15- 0fe46a1
 - [X] Added 4 levels
 - [X] Game ends after last level
 - [X] Game adds lifes after every level 

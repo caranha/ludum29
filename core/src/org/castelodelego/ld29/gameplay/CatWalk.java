@@ -3,6 +3,7 @@ package org.castelodelego.ld29.gameplay;
 import org.castelodelego.ld29.Globals;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -47,6 +48,7 @@ public class CatWalk {
 	PolygonSprite background_top;
 	PolygonSprite background_bottom;
 	
+	Sound cutgulp;
 	
 	
 	public CatWalk(Array<Vector2> startingpoints, String topimage, String bottomimage)
@@ -72,6 +74,7 @@ public class CatWalk {
 		background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
 		background_bottom = new PolygonSprite(createPolygonRegion(background_bottom_region,original));
 		
+		cutgulp = Globals.manager.get("sounds/AreaCut.ogg",Sound.class);		
 	}
 	
 	PolygonRegion createPolygonRegion(TextureRegion img, Array<Vector2> area)
@@ -440,7 +443,6 @@ public class CatWalk {
 			}
 
 			
-			/** TODO: Select 1 or 2 based on enemies **/
 			double p1area = OgamMath.calcPolygonArea(p1);
 			double p2area = OgamMath.calcPolygonArea(p2);
 			double p1weight = 0;
@@ -490,7 +492,7 @@ public class CatWalk {
 			background_top = new PolygonSprite(createPolygonRegion(background_top_region,points));
 			//background_top.setRegion(createPolygonRegion(background_top_region,points));
 			
-			
+			cutgulp.play();
 			Globals.log.addMessage("Coverage", "Coverage: "+getCoverage());
 	}
 }

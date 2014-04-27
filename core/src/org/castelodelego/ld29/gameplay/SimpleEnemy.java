@@ -70,7 +70,6 @@ public class SimpleEnemy {
 	 */
 	public void kill()
 	{
-		// TODO: generate an explosion
 		alive = false;
 	}
 

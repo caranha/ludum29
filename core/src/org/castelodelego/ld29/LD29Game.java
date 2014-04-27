@@ -6,6 +6,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -20,8 +22,8 @@ public class LD29Game extends Game {
 	
 	@Override
 	public void create() {	
-		//Gdx.app.setLogLevel(Application.LOG_NONE);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_NONE);
+		//Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		
 		Globals.init(); // TODO: Send an instance of myself to "globals"
 		
@@ -50,6 +52,14 @@ public class LD29Game extends Game {
 	private void queueAssets()
 	{
 		Globals.manager.load("images/pack.atlas", TextureAtlas.class); // packed images
+		Globals.manager.load("music/music1.ogg", Music.class);
+		Globals.manager.load("music/music2.ogg", Music.class);
+		Globals.manager.load("sounds/AreaCut.ogg", Sound.class);
+		Globals.manager.load("sounds/Choki.ogg", Sound.class);
+		Globals.manager.load("sounds/Death.ogg", Sound.class);
+		Globals.manager.load("sounds/Swipe.ogg", Sound.class);
+		Globals.manager.load("sounds/Tapping.ogg", Sound.class);
+		Globals.manager.load("sounds/Victory.ogg", Sound.class);
 	}
 	
 	@Override

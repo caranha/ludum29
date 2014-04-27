@@ -3,6 +3,7 @@ package org.castelodelego.ld29.gameplay;
 import org.castelodelego.ld29.Globals;
 import org.castelodelego.ld29.LD29Game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -31,6 +32,7 @@ public class PlayerShip {
 	float animtimer = 0;
 	int animdir = 0;
 	float summontimer = 1f;
+	float soundtimer = 0f;
 
 	enum ShipStates { SUMMONING, MOVING, CUTTING };
 	Array<Vector2> goals;
@@ -48,6 +50,8 @@ public class PlayerShip {
 
 	Vector2 cut_dir;
 
+	Sound cutsound;
+	Sound deathsound;
 	
 	public PlayerShip(float x, float y, CatWalk r)
 	{		
@@ -58,6 +62,9 @@ public class PlayerShip {
 
 		goals = new Array<Vector2>();
 		cutline = new Array<Vector2>();		
+		
+		cutsound = Globals.manager.get("sounds/Choki.ogg",Sound.class);
+		deathsound = Globals.manager.get("sounds/Death.ogg",Sound.class);
 	}
 	
 	
@@ -82,6 +89,7 @@ public class PlayerShip {
 		case CUTTING:
 			if (moveToCut(dt,rail,enemies))
 			{
+				deathsound.play();
 				((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(pos, death).addPos(new Vector2(-40,-40)).setfreq(0.8f));
 				return true;
 			}
@@ -89,6 +97,7 @@ public class PlayerShip {
 				for (SimpleEnemy e: enemies)
 					if (Intersector.intersectSegmentCircle(cutline.get(i-1), cutline.get(i), e.getPos(), e.getRadius()*e.getRadius()))
 					{
+						deathsound.play();
 						((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(pos, death).addPos(new Vector2(-40,-40)).setfreq(0.8f));
 						return true;
 					}
@@ -157,6 +166,14 @@ public class PlayerShip {
 	 */
 	boolean moveToCut(float dt, CatWalk rail, Array<SimpleEnemy> enemies)
 	{
+		
+		soundtimer -= dt;
+		if (soundtimer < 0)
+		{
+			cutsound.play(0.5f);
+			soundtimer = 0.2f;
+		}
+		
 		pos.x += cut_dir.x*cut_speed*dt;
 		pos.y += cut_dir.y*cut_speed*dt;
 		

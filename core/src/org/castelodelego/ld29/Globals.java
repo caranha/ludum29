@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -38,6 +39,8 @@ public class Globals {
 	public static GameContext gc;
 	public static Level[] levellist;
 	
+	public static Music gamesong;
+	
 	static void init()
 	{
 		debugtext = new BitmapFont();
@@ -61,4 +64,15 @@ public class Globals {
 		levellist[i++] = new Level("levels/thankyou1","levels/thankyou2",2,Color.WHITE);
 	}		
 	
+	static void init_music()
+	{
+		if (dice.nextBoolean())
+		{
+			gamesong = manager.get("music/music1.ogg",Music.class);
+		}
+		else
+		{
+			gamesong = manager.get("music/music2.ogg",Music.class);
+		}
+	}	
 }
