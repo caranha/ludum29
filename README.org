@@ -11,9 +11,11 @@ Enemies are taken from the pages as well?
 
 ** Current List
 
-- [ ] Needs an indicator for the number of lives
+- [X] Needs an indicator for the number of lives
 - [ ] Add summoning animation/time for player ship
 - [ ] Add death animation for player;
+- [ ] Add visual touch feedback
+- [ ] Add visual woosh feedback
 - [ ] Add Menu Screen
 
 - [ ] Fix Keyboard controls
@@ -22,8 +24,6 @@ Enemies are taken from the pages as well?
 - [ ] Add "glup" Sound when screen is cut
 - [ ] Add "ping" sound when tap
 - [ ] Add "woosh" sound when swipe
-- [ ] Add visual touch feedback
-- [ ] Add visual woosh feedback
 
 - [ ] Make Collision More efficient
 - [ ] Add geometry information on level definition

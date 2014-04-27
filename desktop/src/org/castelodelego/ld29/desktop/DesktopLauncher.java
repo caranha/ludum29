@@ -7,6 +7,7 @@ import org.castelodelego.ld29.LD29Game;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "Layers";
 		config.width = 800;
 		config.height = 480;
 		config.resizable = false;

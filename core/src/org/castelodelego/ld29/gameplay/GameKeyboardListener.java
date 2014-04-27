@@ -17,6 +17,13 @@ public class GameKeyboardListener extends InputAdapter {
 		shift = false;
 	}
 	
+	public void reset()
+	{
+		keymovex = 0;
+		keymovey = 0;
+		shift = false;
+	}
+	
 	@Override
 	public boolean keyDown (int keycode) {
 		switch (keycode)

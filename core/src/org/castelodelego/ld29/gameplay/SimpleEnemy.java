@@ -46,7 +46,6 @@ public class SimpleEnemy {
 		if (animdelay > animinterval)
 		{
 			animdelay = 0;
-			Globals.log.addMessage("Animation", "Animation Address: "+walkanim);
 			((GameplayScreen) LD29Game.gameplayScreen).addProp(Globals.propPool.obtain().init(pos, walkanim).addPos(offset).setfreq(0.5f));
 		}
 	}

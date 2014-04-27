@@ -2,7 +2,6 @@ package org.castelodelego.ld29.gameplay;
 
 import org.castelodelego.ld29.Globals;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -169,16 +168,12 @@ public class CatWalk {
 
 		// 3- Put all vectors in the path - order depends on the shorter distance
 
-		Gdx.app.log("PathFinding", "Start Path Finding");
-		
 		i = idx_o;
 		if (distance < pathlength/2) // possibly goes around all segments #4
 		{
 			while (i != idx_e)
 			{
 				i = (i+1)%points.size;
-				
-				Gdx.app.log("PathFinding", "Adding Point "+i);
 				candidate.add(points.get(i).cpy());
 			}
 		}
@@ -186,9 +181,7 @@ public class CatWalk {
 		{
 			while (i != idx_e)
 			{
-				Gdx.app.log("PathFinding", "Adding Point "+i);
 				candidate.add(points.get(i).cpy());
-				
 				i = (i - 1 + points.size)%points.size;
 			}			
 		}

@@ -20,8 +20,8 @@ public class LD29Game extends Game {
 	
 	@Override
 	public void create() {	
-		
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_NONE);
+		//Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		
 		Globals.init(); // TODO: Send an instance of myself to "globals"
 		
@@ -65,9 +65,11 @@ public class LD29Game extends Game {
 		// Good for rendering debug info
 		
 		// Uncomment for FPS
-		
-		Globals.log.addMessage("FPS", "FPS: "+Gdx.graphics.getFramesPerSecond());
-		Globals.log.render();		
+		if (Gdx.app.getLogLevel() != Application.LOG_NONE)
+		{
+			Globals.log.addMessage("FPS", "FPS: "+Gdx.graphics.getFramesPerSecond());
+			Globals.log.render();		
+		}
 	}
 
 	@Override

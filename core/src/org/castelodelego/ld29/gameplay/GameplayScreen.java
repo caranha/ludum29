@@ -35,6 +35,8 @@ public class GameplayScreen implements Screen {
 	Sprite foreground;
 	Color proptint;
 
+	Sprite lifecount;
+	
 	
 	/* State data */ 
 	enum GameStates {PLAY, GAMEOVER, VICTORY};
@@ -98,6 +100,7 @@ public class GameplayScreen implements Screen {
 
 		background = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(topimage);
 		foreground = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(bottomimage);
+		lifecount = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite("anim/scissors_stop");
 		catwalkPath = new CatWalk(DebugLevel.simpleRectangle(),topimage,bottomimage);
 		
 		// clearing things
@@ -234,16 +237,17 @@ public class GameplayScreen implements Screen {
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		
 		batch.setProjectionMatrix(gameCam.combined);
-		
-		
-		polygonbatch.setProjectionMatrix(gameCam.combined);
+		debugrender.setProjectionMatrix(gameCam.combined);
+		polygonbatch.setProjectionMatrix(gameCam.combined);		
+
+		// DRAWING THE BACKGROUNDS
 		polygonbatch.begin();
 		background.draw(polygonbatch);
 		catwalkPath.render(polygonbatch);
 		polygonbatch.end();		
 		
-		batch.begin();
-		
+		// DRAWING THE SPRITES
+		batch.begin();		
 		catwalkPath.renderPath(batch);
 		if (players.size > 0)
 		{	
@@ -253,6 +257,9 @@ public class GameplayScreen implements Screen {
 		batch.setColor(proptint);
 		for (Prop p: props)
 			p.render(batch);
+		for (int i = 0; i < Globals.gc.getLives(); i++)
+			batch.draw(lifecount, 800-((i+2)*40), 440);
+		
 		
 		if (state == GameStates.VICTORY)
 		{
@@ -260,8 +267,30 @@ public class GameplayScreen implements Screen {
 		}			
 		batch.end();
 		
+		// DRAWING FADE-INS AND FADE-OUTS
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		debugrender.begin(ShapeType.Filled);
+		if (fadein_timer > 0)
+		{
+			debugrender.setColor(1,1,1,2f*fadein_timer);
+			debugrender.rect(0, 0, gameCam.viewportWidth, gameCam.viewportWidth);		
+		}
+		if (state == GameStates.GAMEOVER)
+		{
+
+			debugrender.setColor(1,1,1,1-fadeout_timer);
+			debugrender.rect(0, 0, gameCam.viewportWidth, gameCam.viewportWidth);
+		}
+		debugrender.end();
+		// End Drawing Fade
 		
-		// DEBUG Renders
+		//debugRendering();
+	}
+
+	@SuppressWarnings("unused")
+	private void debugRendering()
+	{
 		debugrender.setProjectionMatrix(gameCam.combined);
 		debugrender.begin(ShapeType.Line);
 		//catwalkPath.debugRender(debugrender);	
@@ -279,23 +308,9 @@ public class GameplayScreen implements Screen {
 		//		if (players.size > 0)
 		//			players.peek().debugRender(debugrender);
 		//		debugrender.end();
-		
-		
-		// Drawing fadeins and fadeouts
-		debugrender.begin(ShapeType.Filled);
-		if (fadein_timer > 0)
-		{
-			debugrender.setColor(1,1,1,2*fadein_timer);
-			debugrender.rect(0, 0, gameCam.viewportWidth, gameCam.viewportWidth);		
-		}
-		if (state == GameStates.GAMEOVER)
-		{
-			debugrender.setColor(1,1,1,1-fadeout_timer);
-			debugrender.rect(0, 0, gameCam.viewportWidth, gameCam.viewportWidth);
-		}
-		debugrender.end();
-		// End Drawing Fade
 	}
+	
+	
 	
 	
 	
@@ -326,6 +341,7 @@ public class GameplayScreen implements Screen {
 	public void hide() {
 		Globals.multiplexer.removeProcessor(gesture);
 		Globals.multiplexer.removeProcessor(keyboard);
+		((GameKeyboardListener) keyboard).reset();
 	}
 
 	@Override
