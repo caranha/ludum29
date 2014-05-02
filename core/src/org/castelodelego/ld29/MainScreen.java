@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
 
 import org.castelodelego.ld29.gameplay.GameplayScreen;
 
 public class MainScreen implements Screen {
 
+	ShapeRenderer debugrender = new ShapeRenderer();
+	
 	Sprite background= null;
 	SpriteBatch batch = new SpriteBatch();
 	OrthographicCamera cam = new OrthographicCamera();
@@ -31,10 +35,13 @@ public class MainScreen implements Screen {
 		batch.end();
 		
 		
-		
 		timeout += delta;
 		if (timeout > 0.5 && Gdx.input.isTouched())
 		{
+			Vector3 touch = cam.unproject(new Vector3(Gdx.input.getX(),Gdx.input.getY(),0));
+			if (!(touch.dst(new Vector3(690,110,0)) < 110))
+				Globals.gc.addLevel(1);
+			
 			((GameplayScreen) LD29Game.gameplayScreen).reset(Globals.levellist[Globals.gc.getLevel()]);
 			((Game) Gdx.app.getApplicationListener()).setScreen(LD29Game.gameplayScreen);
 		}
@@ -54,7 +61,7 @@ public class MainScreen implements Screen {
 		Globals.gamesong.play();
 		
 		if (background == null)
-			background = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite("titlescreen");
+			background = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite("titlescreen2");
 		timeout = 0;
 	}
 

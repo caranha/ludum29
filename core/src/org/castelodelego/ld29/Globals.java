@@ -27,7 +27,7 @@ public class Globals {
         return new Prop();
     }
     };
-	public static final InputMultiplexer multiplexer = new InputMultiplexer();	
+	public static InputMultiplexer multiplexer;	
 	
 	public static Preferences scoreloader;
 	public static LogOverlay log;
@@ -43,18 +43,19 @@ public class Globals {
 	
 	static void init()
 	{
-		debugtext = new BitmapFont();
-		
+		debugtext = new BitmapFont();		
 		batch = new SpriteBatch();
 		animman = new AnimationManager();
 		manager = new AssetManager();
 		log = new LogOverlay();
+		multiplexer = new InputMultiplexer();
 		
 		
 		// FIXME: Make level loading from text file
-		gc = new GameContext(7);
+		gc = new GameContext(8);
 		levellist = new Level[gc.getmaxlevel()];
 		int i = 0;
+		levellist[i++] = new Level("levels/tutorial1","levels/tutorial2",0,Color.WHITE);
 		levellist[i++] = new Level("levels/city","levels/farm",4,Color.WHITE);
 		levellist[i++] = new Level("levels/crone","levels/maiden",8,Color.WHITE);
 		levellist[i++] = new Level("levels/presentation","levels/study",12,Color.WHITE);

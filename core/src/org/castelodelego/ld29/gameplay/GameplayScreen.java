@@ -55,6 +55,7 @@ public class GameplayScreen implements Screen {
 	Vector2 touchpoint;
 	Vector2 projectpoint;
 	Vector2 keymove;	
+	
 	InputProcessor gesture;
 	InputProcessor keyboard;
 
@@ -76,6 +77,10 @@ public class GameplayScreen implements Screen {
 		polygonbatch = new PolygonSpriteBatch();
 		batch = new SpriteBatch();
 		
+		touchpoint = new Vector2();
+		projectpoint = new Vector2();
+		keymove = new Vector2();
+		
 		gesture = new GestureDetector(new GameTouchListener(gameCam,this));
 		keyboard = new GameKeyboardListener(this);
 		
@@ -84,6 +89,22 @@ public class GameplayScreen implements Screen {
 		players = new Array<PlayerShip>(false,1,PlayerShip.class);
 	}
 
+	void setControls()
+	{
+		((GameKeyboardListener) keyboard).reset();
+		if (!Globals.multiplexer.getProcessors().contains(gesture, true))
+			Globals.multiplexer.addProcessor(gesture);
+		if (!Globals.multiplexer.getProcessors().contains(keyboard, true))
+			Globals.multiplexer.addProcessor(keyboard);
+	}
+	
+	void unsetControls()
+	{
+		Globals.multiplexer.removeProcessor(gesture);
+		Globals.multiplexer.removeProcessor(keyboard);
+	}
+	
+	
 	public void reset(Level newlevel)
 	{
 
@@ -98,9 +119,10 @@ public class GameplayScreen implements Screen {
 		// TODO: replace Debuglevel with something more sane
 		// Debuglevel controls the catwalk geometry
 		gameCam.setToOrtho(false, 800, 480); // 480,800 is the size of the "virtual" play area
-		touchpoint = new Vector2();
-		projectpoint = new Vector2();
-		keymove = new Vector2();
+		touchpoint.set(0, 0);
+		projectpoint.set(0,0);
+		keymove.set(0,0);
+		setControls();
 
 		background = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(topimage);
 		foreground = ((TextureAtlas) Globals.manager.get("images/pack.atlas", TextureAtlas.class)).createSprite(bottomimage);
@@ -344,23 +366,23 @@ public class GameplayScreen implements Screen {
 
 	@Override
 	public void show() {
-		Globals.multiplexer.addProcessor(gesture);
-		Globals.multiplexer.addProcessor(keyboard);
+		setControls();
 	}
 
 	@Override
 	public void hide() {
-		Globals.multiplexer.removeProcessor(gesture);
-		Globals.multiplexer.removeProcessor(keyboard);
-		((GameKeyboardListener) keyboard).reset();
+		unsetControls();
 	}
 
 	@Override
 	public void pause() {
+		unsetControls();
 	}
+	
 
 	@Override
 	public void resume() {
+		setControls();
 	}
 
 	@Override

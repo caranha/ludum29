@@ -25,8 +25,7 @@ public class LD29Game extends Game {
 		Gdx.app.setLogLevel(Application.LOG_NONE);
 		//Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		
-		Globals.init(); // TODO: Send an instance of myself to "globals"
-		
+		Globals.init(); // TODO: Send an instance of myself to "globals"	
 		Gdx.input.setInputProcessor(Globals.multiplexer);
 		
 		// Creating global resource managers
@@ -39,8 +38,6 @@ public class LD29Game extends Game {
 		globalcam = new OrthographicCamera();
 		globalcam.setToOrtho(false);	
 
-		
-		
 		setScreen(splashScreen);
 		
 	}

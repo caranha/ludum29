@@ -66,6 +66,13 @@ filter: Nearest,Nearest
 repeat: none
 titlescreen
   rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+titlescreen2
+  rotate: false
   xy: 2, 2
   size: 800, 480
   orig: 800, 480
@@ -206,6 +213,25 @@ levels/thankyou2
   index: -1
 
 pack10.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+levels/tutorial1
+  rotate: false
+  xy: 2, 484
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+levels/tutorial2
+  rotate: false
+  xy: 2, 2
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+
+pack11.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none

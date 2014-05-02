@@ -19,7 +19,7 @@ Enemies are taken from the pages as well?
 - [ ] Add geometry information on level definition
 - [ ] Add reading level from file
 
-** 16- Compo Submission 1
+** 16- Compo Submission 1 e33e8f58
 - [X] Add Sounds
   - [X] Autotracker music
   - [X] Bam sound when player dies
